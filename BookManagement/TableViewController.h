@@ -1,5 +1,5 @@
 //
-//  ViewController.h
+//  TableViewController.h
 //  BookManagement
 //
 //  Created by 大杉康仁 on 2014/09/02.
@@ -7,7 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "MainViewController.h"
 
-@interface ViewController : UIViewController
+@interface TableViewController : UITableViewController 
 
 @end
