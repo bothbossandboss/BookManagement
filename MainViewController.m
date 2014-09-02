@@ -90,10 +90,11 @@
     float screenHeight = screenBounds.size.height;
     float textFieldEdge = activeField.frame.origin.y + activeField.frame.size.height;
     float keyboardEdge = screenHeight-keyboardFrameEnd.size.height - 30;
+    float afterScreenEdge = screenHeight-activeField.frame.origin.y - activeField.frame.size.height-keyboardFrameEnd.size.height - 80;
     if(textFieldEdge > keyboardEdge){
         [UIView animateWithDuration:0.3
                      animations:^{
-                         _myScrollView.frame = CGRectMake(0, screenHeight-activeField.frame.origin.y - activeField.frame.size.height-keyboardFrameEnd.size.height, _myScrollView.frame.size.width, _myScrollView.frame.size.height);
+                         _myScrollView.frame = CGRectMake(0, afterScreenEdge, _myScrollView.frame.size.width, _myScrollView.frame.size.height);
                      }];
     }
 }
