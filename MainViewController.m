@@ -20,13 +20,13 @@
 {
     [super viewDidLoad];
     _myScrollView.frame = self.view.bounds;
-    UIBarButtonItem *nextButton = [[UIBarButtonItem alloc]
+    UIBarButtonItem *saveButton = [[UIBarButtonItem alloc]
                    initWithTitle:@"保存"
-                   style:UIBarButtonItemStyleBordered
+                   style:UIBarButtonItemStyleDone
                    target:self
-                   action:@selector(nextWindowCreate:)
+                   action:@selector(saveDataAction:)
                    ];
-    self.navigationItem.rightBarButtonItem = nextButton;
+    self.navigationItem.rightBarButtonItem = saveButton;
     self.navigationItem.title = @"書籍編集";
     //シングルタップでキーボードを収納するための設定。
     self.singleTap = [[UITapGestureRecognizer alloc]
@@ -43,6 +43,17 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+
+-(void)saveDataAction{
+    //詳細画面において、保存ボタンを押すと実行されるべき事柄
+    //書籍名、金額、日付データを取得し、前のTable画面へデータを渡す。
+}
+
+
+
+
+
+
 
 //シングルタップでの挙動（キーボード表示の時）
 -(void)onSingleTap:(UITapGestureRecognizer*)recognizer{
@@ -62,7 +73,7 @@
     }
     return  YES;
 }
-
+//TextField制御
 -(BOOL)textFieldShouldBeginEditing:(UITextField *)textField{
     activeField = textField;
     return YES;

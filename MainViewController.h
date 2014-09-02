@@ -8,6 +8,10 @@
 
 #import <UIKit/UIKit.h>
 
+@protocol MainViewControllerDelegate
+-(void)saveEditedData;
+@end
+
 @interface MainViewController : UIViewController
 <UITextFieldDelegate, UIGestureRecognizerDelegate>
 

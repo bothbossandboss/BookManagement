@@ -69,6 +69,7 @@
     //次の画面の戻るボタンのタイトルの編集はここで行う。
     UIBarButtonItem *backItem = [[UIBarButtonItem alloc] init];
     backItem.title = @"戻る";
+    backItem.style = UIBarButtonSystemItemCancel;
     self.navigationItem.backBarButtonItem = backItem;
     //詳細画面の作成。
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
