@@ -1,13 +1,13 @@
 //
-//  TableViewController.m
+//  MainTableViewController.m
 //  BookManagement
 //
 //  Created by 大杉康仁 on 2014/09/02.
 //  Copyright (c) 2014年 ___YOhsugi___. All rights reserved.
 //
 
-#import "TableViewController.h"
-#import "MainViewController.h"
+#import "MainTableViewController.h"
+#import "EditViewController.h"
 #import "DetailTableViewCell.h"
 
 #define cellImageViewX 20
@@ -16,16 +16,23 @@
 #define cellImageHeight 80
 
 
-@interface TableViewController () <MainViewControllerDelegate>
+@interface MainTableViewController () <EditViewControllerDelegate>
 
 @end
 
-@implementation TableViewController
+@implementation MainTableViewController
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.title = @"test";
+    self.title = @"書籍一覧";
+    UIBarButtonItem *addButton = [[UIBarButtonItem alloc]
+                                   initWithTitle:@"追加"
+                                   style:UIBarButtonItemStyleDone
+                                   target:self
+                                   action:@selector(addButtonTapped:)
+                                   ];
+    self.navigationItem.rightBarButtonItem = addButton;    
     [self.tableView registerNib:[UINib nibWithNibName:@"DetailTableViewCell" bundle:nil] forCellReuseIdentifier:@"Cell"];
 }
 
@@ -80,7 +87,7 @@
     self.navigationItem.backBarButtonItem = backItem;
     //詳細画面の作成。
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
-    MainViewController *detailViewController = [[MainViewController alloc] init];
+    EditViewController *detailViewController = [[EditViewController alloc] init];
     //indexPathで指定したcellのデータを読み出す。この時、cellForRowAtIndexの返り値はUITableViewCellなので適宜キャストすること。
     DetailTableViewCell *cell = (DetailTableViewCell*)[tableView cellForRowAtIndexPath:indexPath];
     //textField.textをセットするのではなく、NSStringのデータを渡すようにセットする。
@@ -100,7 +107,7 @@
     //[detailDataArray replaceObjectAtIndex:0 withObject:]
 }
 
-- (void)saveEditedData:(MainViewController*)controller
+- (void)saveEditedData:(EditViewController*)controller
 {
     //indexPathを指定してcellを呼び出す。
     NSIndexPath *cellIndexPath = [NSIndexPath indexPathForRow:controller.indexPathRow inSection:controller.indexPathSection];

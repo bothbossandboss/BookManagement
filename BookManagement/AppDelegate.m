@@ -7,15 +7,15 @@
 //
 
 #import "AppDelegate.h"
-#import "MainViewController.h"
-#import "TableViewController.h"
+#import "EditViewController.h"
+#import "MainTableViewController.h"
 
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen]bounds]];
-    TableViewController *mainView = [[TableViewController alloc]init];
+    MainTableViewController *mainView = [[MainTableViewController alloc]init];
     //MainViewController *mainView = [[MainViewController alloc]init];
     
     UINavigationController *mainNavi = [[UINavigationController alloc]

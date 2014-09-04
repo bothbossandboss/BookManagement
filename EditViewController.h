@@ -1,5 +1,5 @@
 //
-//  MainViewController.h
+//  EditViewController.h
 //  BookManagement
 //
 //  Created by 大杉康仁 on 2014/09/02.
@@ -7,9 +7,9 @@
 //
 
 //循環参照を避けるため、@protocol ~;   --->  @protocol ~ <NSObject> ....@endと書く。
-@protocol MainViewControllerDelegate;
+@protocol EditViewControllerDelegate;
 
-@interface MainViewController : UIViewController
+@interface EditViewController : UIViewController
 <UITextFieldDelegate, UIGestureRecognizerDelegate>
 
 @property int indexPathRow;
@@ -25,12 +25,12 @@
 @property(weak, nonatomic) IBOutlet UITextField *dateTextField;
 @property(strong, nonatomic) IBOutlet UIImageView* imageView;
 
-@property(weak, nonatomic) id<MainViewControllerDelegate> delegate;
+@property(weak, nonatomic) id<EditViewControllerDelegate> delegate;
 - (void)saveButtonTapped:(id)sender;
 @property(strong, nonatomic) UITapGestureRecognizer *singleTap;
 
 @end
 
-@protocol MainViewControllerDelegate <NSObject>
-- (void)saveEditedData:(MainViewController*)controller;
+@protocol EditViewControllerDelegate <NSObject>
+- (void)saveEditedData:(EditViewController*)controller;
 @end

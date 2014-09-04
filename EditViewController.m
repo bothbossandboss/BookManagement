@@ -1,14 +1,14 @@
 //
-//  MainViewController.m
+//  EditViewController.m
 //  BookManagement
 //
 //  Created by 大杉康仁 on 2014/09/02.
 //  Copyright (c) 2014年 ___YOhsugi___. All rights reserved.
 //
 
-#import "MainViewController.h"
+#import "EditViewController.h"
 
-@interface MainViewController ()
+@interface EditViewController ()
 {
     UITextField *activeField;
     UIDatePicker *datePicker;
@@ -16,7 +16,7 @@
 
 @end
 
-@implementation MainViewController
+@implementation EditViewController
 
 @synthesize bookNameTextField;
 @synthesize priceTextField;

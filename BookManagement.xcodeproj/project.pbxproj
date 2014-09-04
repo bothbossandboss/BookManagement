@@ -19,10 +19,10 @@
 		7FA697C819B54E6600A8A742 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7FA697AA19B54E6600A8A742 /* UIKit.framework */; };
 		7FA697D019B54E6600A8A742 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 7FA697CE19B54E6600A8A742 /* InfoPlist.strings */; };
 		7FA697D219B54E6600A8A742 /* BookManagementTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 7FA697D119B54E6600A8A742 /* BookManagementTests.m */; };
-		7FA697DE19B54F1B00A8A742 /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7FA697DC19B54F1B00A8A742 /* MainViewController.m */; };
-		7FA697DF19B54F1B00A8A742 /* MainViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7FA697DD19B54F1B00A8A742 /* MainViewController.xib */; };
-		7FA697E319B55C7900A8A742 /* TableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7FA697E119B55C7900A8A742 /* TableViewController.m */; };
-		7FA697E419B55C7900A8A742 /* TableViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7FA697E219B55C7900A8A742 /* TableViewController.xib */; };
+		7FA697DE19B54F1B00A8A742 /* EditViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7FA697DC19B54F1B00A8A742 /* EditViewController.m */; };
+		7FA697DF19B54F1B00A8A742 /* EditViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7FA697DD19B54F1B00A8A742 /* EditViewController.xib */; };
+		7FA697E319B55C7900A8A742 /* MainTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7FA697E119B55C7900A8A742 /* MainTableViewController.m */; };
+		7FA697E419B55C7900A8A742 /* MainTableViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7FA697E219B55C7900A8A742 /* MainTableViewController.xib */; };
 		7FA697E819B5783800A8A742 /* DetailTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7FA697E619B5783800A8A742 /* DetailTableViewCell.m */; };
 		7FA697E919B5783800A8A742 /* DetailTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7FA697E719B5783800A8A742 /* DetailTableViewCell.xib */; };
 		7FA697ED19B579BF00A8A742 /* 6fe029a2.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7FA697EA19B579BF00A8A742 /* 6fe029a2.jpg */; };
@@ -57,12 +57,12 @@
 		7FA697CD19B54E6600A8A742 /* BookManagementTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "BookManagementTests-Info.plist"; sourceTree = "<group>"; };
 		7FA697CF19B54E6600A8A742 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		7FA697D119B54E6600A8A742 /* BookManagementTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BookManagementTests.m; sourceTree = "<group>"; };
-		7FA697DB19B54F1B00A8A742 /* MainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MainViewController.h; path = ../MainViewController.h; sourceTree = "<group>"; };
-		7FA697DC19B54F1B00A8A742 /* MainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MainViewController.m; path = ../MainViewController.m; sourceTree = "<group>"; };
-		7FA697DD19B54F1B00A8A742 /* MainViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = MainViewController.xib; path = ../MainViewController.xib; sourceTree = "<group>"; };
-		7FA697E019B55C7900A8A742 /* TableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TableViewController.h; sourceTree = "<group>"; };
-		7FA697E119B55C7900A8A742 /* TableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TableViewController.m; sourceTree = "<group>"; };
-		7FA697E219B55C7900A8A742 /* TableViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TableViewController.xib; sourceTree = "<group>"; };
+		7FA697DB19B54F1B00A8A742 /* EditViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EditViewController.h; path = ../EditViewController.h; sourceTree = "<group>"; };
+		7FA697DC19B54F1B00A8A742 /* EditViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EditViewController.m; path = ../EditViewController.m; sourceTree = "<group>"; };
+		7FA697DD19B54F1B00A8A742 /* EditViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = EditViewController.xib; path = ../EditViewController.xib; sourceTree = "<group>"; };
+		7FA697E019B55C7900A8A742 /* MainTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainTableViewController.h; sourceTree = "<group>"; };
+		7FA697E119B55C7900A8A742 /* MainTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainTableViewController.m; sourceTree = "<group>"; };
+		7FA697E219B55C7900A8A742 /* MainTableViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MainTableViewController.xib; sourceTree = "<group>"; };
 		7FA697E519B5783800A8A742 /* DetailTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DetailTableViewCell.h; sourceTree = "<group>"; };
 		7FA697E619B5783800A8A742 /* DetailTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DetailTableViewCell.m; sourceTree = "<group>"; };
 		7FA697E719B5783800A8A742 /* DetailTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = DetailTableViewCell.xib; sourceTree = "<group>"; };
@@ -131,12 +131,12 @@
 				7FA697EA19B579BF00A8A742 /* 6fe029a2.jpg */,
 				7FA697EB19B579BF00A8A742 /* 1920_1080_20100420011049652500.jpg */,
 				7FA697EC19B579BF00A8A742 /* 20140805161726950.jpg */,
-				7FA697DB19B54F1B00A8A742 /* MainViewController.h */,
-				7FA697DC19B54F1B00A8A742 /* MainViewController.m */,
-				7FA697DD19B54F1B00A8A742 /* MainViewController.xib */,
-				7FA697E019B55C7900A8A742 /* TableViewController.h */,
-				7FA697E119B55C7900A8A742 /* TableViewController.m */,
-				7FA697E219B55C7900A8A742 /* TableViewController.xib */,
+				7FA697DB19B54F1B00A8A742 /* EditViewController.h */,
+				7FA697DC19B54F1B00A8A742 /* EditViewController.m */,
+				7FA697DD19B54F1B00A8A742 /* EditViewController.xib */,
+				7FA697E019B55C7900A8A742 /* MainTableViewController.h */,
+				7FA697E119B55C7900A8A742 /* MainTableViewController.m */,
+				7FA697E219B55C7900A8A742 /* MainTableViewController.xib */,
 				7FA697E519B5783800A8A742 /* DetailTableViewCell.h */,
 				7FA697E619B5783800A8A742 /* DetailTableViewCell.m */,
 				7FA697E719B5783800A8A742 /* DetailTableViewCell.xib */,
@@ -256,11 +256,11 @@
 				7FA697BF19B54E6600A8A742 /* Images.xcassets in Resources */,
 				7FA697E919B5783800A8A742 /* DetailTableViewCell.xib in Resources */,
 				7FA697ED19B579BF00A8A742 /* 6fe029a2.jpg in Resources */,
-				7FA697DF19B54F1B00A8A742 /* MainViewController.xib in Resources */,
+				7FA697DF19B54F1B00A8A742 /* EditViewController.xib in Resources */,
 				7FA697B119B54E6600A8A742 /* InfoPlist.strings in Resources */,
 				7FA697EF19B579BF00A8A742 /* 20140805161726950.jpg in Resources */,
 				7FA697EE19B579BF00A8A742 /* 1920_1080_20100420011049652500.jpg in Resources */,
-				7FA697E419B55C7900A8A742 /* TableViewController.xib in Resources */,
+				7FA697E419B55C7900A8A742 /* MainTableViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -281,9 +281,9 @@
 			files = (
 				7FA697B719B54E6600A8A742 /* AppDelegate.m in Sources */,
 				7FA697E819B5783800A8A742 /* DetailTableViewCell.m in Sources */,
-				7FA697DE19B54F1B00A8A742 /* MainViewController.m in Sources */,
+				7FA697DE19B54F1B00A8A742 /* EditViewController.m in Sources */,
 				7FA697B319B54E6600A8A742 /* main.m in Sources */,
-				7FA697E319B55C7900A8A742 /* TableViewController.m in Sources */,
+				7FA697E319B55C7900A8A742 /* MainTableViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
