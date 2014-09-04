@@ -6,7 +6,7 @@
 //  Copyright (c) 2014年 ___YOhsugi___. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+
 #import "MainViewController.h"
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate>

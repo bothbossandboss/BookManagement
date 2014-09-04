@@ -28,8 +28,6 @@
 		7FA697ED19B579BF00A8A742 /* 6fe029a2.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7FA697EA19B579BF00A8A742 /* 6fe029a2.jpg */; };
 		7FA697EE19B579BF00A8A742 /* 1920_1080_20100420011049652500.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7FA697EB19B579BF00A8A742 /* 1920_1080_20100420011049652500.jpg */; };
 		7FA697EF19B579BF00A8A742 /* 20140805161726950.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 7FA697EC19B579BF00A8A742 /* 20140805161726950.jpg */; };
-		7FA697F619B5E30B00A8A742 /* DatePickerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7FA697F419B5E30B00A8A742 /* DatePickerViewController.m */; };
-		7FA697F719B5E30B00A8A742 /* DatePickerViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7FA697F519B5E30B00A8A742 /* DatePickerViewController.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -71,9 +69,6 @@
 		7FA697EA19B579BF00A8A742 /* 6fe029a2.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = 6fe029a2.jpg; sourceTree = "<group>"; };
 		7FA697EB19B579BF00A8A742 /* 1920_1080_20100420011049652500.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = 1920_1080_20100420011049652500.jpg; sourceTree = "<group>"; };
 		7FA697EC19B579BF00A8A742 /* 20140805161726950.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = 20140805161726950.jpg; sourceTree = "<group>"; };
-		7FA697F319B5E30B00A8A742 /* DatePickerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DatePickerViewController.h; path = ../DatePickerViewController.h; sourceTree = "<group>"; };
-		7FA697F419B5E30B00A8A742 /* DatePickerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DatePickerViewController.m; path = ../DatePickerViewController.m; sourceTree = "<group>"; };
-		7FA697F519B5E30B00A8A742 /* DatePickerViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = DatePickerViewController.xib; path = ../DatePickerViewController.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -133,9 +128,6 @@
 		7FA697AC19B54E6600A8A742 /* BookManagement */ = {
 			isa = PBXGroup;
 			children = (
-				7FA697F319B5E30B00A8A742 /* DatePickerViewController.h */,
-				7FA697F419B5E30B00A8A742 /* DatePickerViewController.m */,
-				7FA697F519B5E30B00A8A742 /* DatePickerViewController.xib */,
 				7FA697EA19B579BF00A8A742 /* 6fe029a2.jpg */,
 				7FA697EB19B579BF00A8A742 /* 1920_1080_20100420011049652500.jpg */,
 				7FA697EC19B579BF00A8A742 /* 20140805161726950.jpg */,
@@ -267,7 +259,6 @@
 				7FA697DF19B54F1B00A8A742 /* MainViewController.xib in Resources */,
 				7FA697B119B54E6600A8A742 /* InfoPlist.strings in Resources */,
 				7FA697EF19B579BF00A8A742 /* 20140805161726950.jpg in Resources */,
-				7FA697F719B5E30B00A8A742 /* DatePickerViewController.xib in Resources */,
 				7FA697EE19B579BF00A8A742 /* 1920_1080_20100420011049652500.jpg in Resources */,
 				7FA697E419B55C7900A8A742 /* TableViewController.xib in Resources */,
 			);
@@ -292,7 +283,6 @@
 				7FA697E819B5783800A8A742 /* DetailTableViewCell.m in Sources */,
 				7FA697DE19B54F1B00A8A742 /* MainViewController.m in Sources */,
 				7FA697B319B54E6600A8A742 /* main.m in Sources */,
-				7FA697F619B5E30B00A8A742 /* DatePickerViewController.m in Sources */,
 				7FA697E319B55C7900A8A742 /* TableViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -490,6 +480,7 @@
 				7FA697D719B54E6600A8A742 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		7FA697D819B54E6600A8A742 /* Build configuration list for PBXNativeTarget "BookManagementTests" */ = {
 			isa = XCConfigurationList;
@@ -498,6 +489,7 @@
 				7FA697DA19B54E6600A8A742 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

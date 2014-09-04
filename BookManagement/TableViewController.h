@@ -6,9 +6,7 @@
 //  Copyright (c) 2014年 ___YOhsugi___. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
 #import "MainViewController.h"
-
-@interface TableViewController : UITableViewController 
+@interface TableViewController : UITableViewController <MainViewControllerDelegate>
 
 @end

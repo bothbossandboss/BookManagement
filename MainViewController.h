@@ -6,17 +6,31 @@
 //  Copyright (c) 2014年 ___YOhsugi___. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
-
-@protocol MainViewControllerDelegate
--(void)saveEditedData;
-@end
+//循環参照を避けるため、@protocol ~;   --->  @protocol ~ <NSObject> ....@endと書く。
+@protocol MainViewControllerDelegate;
 
 @interface MainViewController : UIViewController
 <UITextFieldDelegate, UIGestureRecognizerDelegate>
 
-@property(strong, nonatomic) UITapGestureRecognizer *singleTap;
+@property int indexPathRow;
+@property int indexPathSection;
+@property(weak, nonatomic)NSString *bookName;
+@property(weak, nonatomic)NSString *price;
+@property(weak, nonatomic)NSString *date;
+@property(weak, nonatomic)NSString *imageName;
+
 @property(weak, nonatomic) IBOutlet UITextField *bookNameTextField;
 @property(weak, nonatomic) IBOutlet UITextField *priceTextField;
 @property(weak, nonatomic) IBOutlet UIScrollView *myScrollView;
+@property(weak, nonatomic) IBOutlet UITextField *dateTextField;
+@property(strong, nonatomic) IBOutlet UIImageView* imageView;
+
+@property(weak, nonatomic) id<MainViewControllerDelegate> delegate;
+- (void)saveButtonTapped:(id)sender;
+@property(strong, nonatomic) UITapGestureRecognizer *singleTap;
+
+@end
+
+@protocol MainViewControllerDelegate <NSObject>
+- (void)saveEditedData:(MainViewController*)controller;
 @end

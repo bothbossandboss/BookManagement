@@ -6,12 +6,12 @@
 //  Copyright (c) 2014年 ___YOhsugi___. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
 
 @interface DetailTableViewCell : UITableViewCell
 @property (weak, nonatomic) IBOutlet UILabel *bookNameLabel;
 @property (weak, nonatomic) IBOutlet UILabel *priceLabel;
 @property (weak, nonatomic) IBOutlet UILabel *dateLabel;
-@property (weak, nonatomic) IBOutlet UIImageView *bookImage;
+@property (weak, nonatomic) IBOutlet UIImageView *bookImageView;
+@property (weak, nonatomic) NSString *bookImageName;
 
 @end

@@ -10,7 +10,13 @@
 #import "MainViewController.h"
 #import "DetailTableViewCell.h"
 
-@interface TableViewController ()
+#define cellImageViewX 20
+#define cellImageViewY 10
+#define cellImageWidth 80
+#define cellImageHeight 80
+
+
+@interface TableViewController () <MainViewControllerDelegate>
 
 @end
 
@@ -31,7 +37,8 @@
 
 #pragma mark - Table view data source
 
--(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
     return  10;
 }
 
@@ -49,17 +56,17 @@
     cell.priceLabel.text = [NSString stringWithFormat:@"%d円",indexPath.row*100];
     cell.dateLabel.text = [NSString stringWithFormat:@"2014/9/%d",indexPath.row+1];
     //画像を指定。
-    NSString *imageName;
     srand((unsigned int)time(NULL));
     int n = rand() % 3;
-    if(n == 0) imageName = @"20140805161726950.jpg";
-    else if(n == 1) imageName = @"1920_1080_20100420011049652500.jpg";
-    else imageName = @"6fe029a2.jpg";
-    cell.bookImage.image = [UIImage imageNamed:imageName];
+    if(n == 0) cell.bookImageName = @"20140805161726950.jpg";
+    else if(n == 1) cell.bookImageName = @"1920_1080_20100420011049652500.jpg";
+    else cell.bookImageName = @"6fe029a2.jpg";
+    cell.bookImageView.image = [UIImage imageNamed:cell.bookImageName];
     return cell;
 }
 //cellの大きさ（高さ）の設定。
--(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
     return 100;
 }
 
@@ -74,8 +81,42 @@
     //詳細画面の作成。
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     MainViewController *detailViewController = [[MainViewController alloc] init];
+    //indexPathで指定したcellのデータを読み出す。この時、cellForRowAtIndexの返り値はUITableViewCellなので適宜キャストすること。
+    DetailTableViewCell *cell = (DetailTableViewCell*)[tableView cellForRowAtIndexPath:indexPath];
+    //textField.textをセットするのではなく、NSStringのデータを渡すようにセットする。
+    //set変数名で初期値をセットして画面を作成できる。
+    [detailViewController setIndexPathRow:indexPath.row];
+    [detailViewController setIndexPathSection:indexPath.section];
+    [detailViewController setBookName:cell.bookNameLabel.text];
+    [detailViewController setPrice:cell.priceLabel.text];
+    [detailViewController setDate:cell.dateLabel.text];
+    [detailViewController setImageName:cell.bookImageName];
+    detailViewController.delegate = self;
     [self.navigationController pushViewController:detailViewController animated:YES];
 }
+
+- (void)detailData:(NSMutableArray*)detailDataArray
+{
+    //[detailDataArray replaceObjectAtIndex:0 withObject:]
+}
+
+- (void)saveEditedData:(MainViewController*)controller
+{
+    //indexPathを指定してcellを呼び出す。
+    NSIndexPath *cellIndexPath = [NSIndexPath indexPathForRow:controller.indexPathRow inSection:controller.indexPathSection];
+    DetailTableViewCell *cell = (DetailTableViewCell*)[self.tableView cellForRowAtIndexPath:cellIndexPath];
+    //値の更新
+    cell.bookNameLabel.text = controller.bookName;
+    cell.priceLabel.text = controller.price;
+    cell.dateLabel.text = controller.date;
+    cell.bookImageView.image = [UIImage imageNamed:controller.imageName];
+    //controllerの解放
+    [self.navigationController popViewControllerAnimated:YES];
+}
+
+
+
+
 
 
 @end
