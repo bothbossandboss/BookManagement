@@ -15,7 +15,6 @@
 {
     UITextField *activeField;
 }
-
 @end
 
 @implementation AccountViewController
@@ -75,13 +74,26 @@
 
 - (void)saveButtonTapped
 {
-    //mailAddressとpasswordをTextFieldの内容に更新
-    if([self.delegate respondsToSelector:@selector(saveEditedAccountInfo:)]){
-        self.mailAddress = self.mailAddressTextField.text;
-        self.password = self.passwordTextField.text;
-        [self.delegate saveEditedAccountInfo:self];
-        [self dismissViewControllerAnimated:YES completion:nil];
+    //文字列(NSString)の比較はisEqualToString:を用いる。(==)ではだめ。
+    //isEqualToString:はバイト数が違うとアウトのようです。似通ったものでもokならcompareだとか(？)
+    if (![passwordTextField.text isEqualToString:confirmTextField.text]) {
+        UIAlertView *alertView = [[UIAlertView alloc]
+                                  initWithTitle:@"エラー"
+                                  message:@"パスワードが違います"
+                                  delegate:self
+                                  cancelButtonTitle:@"OK"
+                                  otherButtonTitles:nil];
+        [alertView show];
+    }else{
+        //mailAddressとpasswordをTextFieldの内容に更新
+        if([self.delegate respondsToSelector:@selector(saveEditedAccountInfo:)]){
+            self.mailAddress = self.mailAddressTextField.text;
+            self.password = self.passwordTextField.text;
+            [self.delegate saveEditedAccountInfo:self];
+            [self dismissViewControllerAnimated:YES completion:nil];
+        }
     }
+    
 }
 
 - (void)cancelButtonTapped

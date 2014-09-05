@@ -64,7 +64,6 @@
 
 - (void)saveEditedAccountInfo:(AccountViewController *)controller
 {
-    NSLog(@"mail:%@ pass:%@",controller.mailAddress,controller.password);
     [accountInfo insertObject:controller.mailAddress atIndex:MAIL];
     [accountInfo insertObject:controller.password atIndex:PASSWORD];
     NSLog(@"MAIL:%@ PASS:%@",[accountInfo objectAtIndex:MAIL],[accountInfo objectAtIndex:PASSWORD]);

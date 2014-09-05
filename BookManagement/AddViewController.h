@@ -6,6 +6,7 @@
 //  Copyright (c) 2014年 ___YOhsugi___. All rights reserved.
 //
 
+//継承は、@interface ~~~ : (継承するクラス)で表す。
 #import <UIKit/UIKit.h>
 
 @protocol AddViewControllerDelegate;

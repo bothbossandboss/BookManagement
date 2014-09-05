@@ -10,6 +10,7 @@
 #import "EditViewController.h"
 #import "MainTableViewController.h"
 #import "PropertyViewController.h"
+#import "AccountViewController.h"
 
 #define setTabBarItemPosition -10
 
@@ -40,6 +41,8 @@
     propertyTabBarItem.title = @"設定";
     [[UITabBarItem appearance] setTitlePositionAdjustment:UIOffsetMake(0, setTabBarItemPosition)];
     self.window.rootViewController = self.tabBarController;
+    //AccountViewController *firstView = [[AccountViewController alloc]init];
+    //[self.window addSubview:firstView.view];
     [self.window makeKeyAndVisible];
     return YES;
 }

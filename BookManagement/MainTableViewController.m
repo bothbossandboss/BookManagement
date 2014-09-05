@@ -12,6 +12,7 @@
 #import "AddViewController.h"
 
 #define numOfFirstCellRow 10
+#define cellHeight 90
 
 @interface MainTableViewController () <EditViewControllerDelegate, AddViewControllerDelegate>
 {
@@ -98,7 +99,7 @@
 //cellの大きさ（高さ）の設定。
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return 100;
+    return cellHeight;
 }
 
 //cellが選択された時に呼ばれるメソッド
