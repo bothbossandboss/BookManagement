@@ -9,14 +9,18 @@
 #import "MainTableViewController.h"
 #import "EditViewController.h"
 #import "DetailTableViewCell.h"
+#import "AddViewController.h"
 
-#define cellImageViewX 20
-#define cellImageViewY 10
-#define cellImageWidth 80
-#define cellImageHeight 80
+#define numOfFirstCellRow 10
 
-
-@interface MainTableViewController () <EditViewControllerDelegate>
+@interface MainTableViewController () <EditViewControllerDelegate, AddViewControllerDelegate>
+{
+    NSInteger numOfCellRow;
+    NSMutableArray *bookNameArray;
+    NSMutableArray *priceArray;
+    NSMutableArray *dateArray;
+    NSMutableArray *imageNameArray;
+}
 
 @end
 
@@ -26,11 +30,32 @@
 {
     [super viewDidLoad];
     self.title = @"書籍一覧";
+    numOfCellRow = numOfFirstCellRow;
+    bookNameArray = [[NSMutableArray alloc]init];
+    priceArray = [[NSMutableArray alloc]init];
+    dateArray = [[NSMutableArray alloc]init];
+    imageNameArray = [[NSMutableArray alloc]init];
+    int i;
+    for(i=0;i<numOfFirstCellRow;i++){
+        NSMutableString *str = [[NSMutableString alloc] initWithFormat:@"row%d",i];
+        [bookNameArray insertObject:str atIndex:i];
+        str = [[NSMutableString alloc] initWithFormat:@"%d円",i*100];
+        [priceArray insertObject:str atIndex:i];
+        str = [[NSMutableString alloc] initWithFormat:@"2014/9/%d",i];
+        [dateArray insertObject:str atIndex:i];
+        NSString *randomImage;
+        srand((unsigned int)time(NULL));
+        int n = rand() % 3;
+        if(n == 0) randomImage = @"20140805161726950.jpg";
+        else if(n == 1) randomImage = @"1920_1080_20100420011049652500.jpg";
+        else randomImage = @"6fe029a2.jpg";
+        [imageNameArray insertObject:randomImage atIndex:i];
+    }
     UIBarButtonItem *addButton = [[UIBarButtonItem alloc]
                                    initWithTitle:@"追加"
                                    style:UIBarButtonItemStyleDone
                                    target:self
-                                   action:@selector(addButtonTapped:)
+                                   action:@selector(addButtonTapped)
                                    ];
     self.navigationItem.rightBarButtonItem = addButton;    
     [self.tableView registerNib:[UINib nibWithNibName:@"DetailTableViewCell" bundle:nil] forCellReuseIdentifier:@"Cell"];
@@ -44,9 +69,14 @@
 
 #pragma mark - Table view data source
 
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
+    return 1;
+}
+
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return  10;
+    return  numOfCellRow;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -59,16 +89,10 @@
     cell.bookNameLabel.adjustsFontSizeToFitWidth = YES;
     cell.priceLabel.adjustsFontSizeToFitWidth = YES;
     cell.dateLabel.adjustsFontSizeToFitWidth = YES;
-    cell.bookNameLabel.text = [NSString stringWithFormat:@"row%d",indexPath.row];
-    cell.priceLabel.text = [NSString stringWithFormat:@"%d円",indexPath.row*100];
-    cell.dateLabel.text = [NSString stringWithFormat:@"2014/9/%d",indexPath.row+1];
-    //画像を指定。
-    srand((unsigned int)time(NULL));
-    int n = rand() % 3;
-    if(n == 0) cell.bookImageName = @"20140805161726950.jpg";
-    else if(n == 1) cell.bookImageName = @"1920_1080_20100420011049652500.jpg";
-    else cell.bookImageName = @"6fe029a2.jpg";
-    cell.bookImageView.image = [UIImage imageNamed:cell.bookImageName];
+    cell.bookNameLabel.text = [bookNameArray objectAtIndex:indexPath.row];
+    cell.priceLabel.text = [priceArray objectAtIndex:indexPath.row];
+    cell.dateLabel.text = [dateArray objectAtIndex:indexPath.row];
+    cell.bookImageView.image = [UIImage imageNamed:[imageNameArray objectAtIndex:indexPath.row]];
     return cell;
 }
 //cellの大きさ（高さ）の設定。
@@ -97,7 +121,7 @@
     [detailViewController setBookName:cell.bookNameLabel.text];
     [detailViewController setPrice:cell.priceLabel.text];
     [detailViewController setDate:cell.dateLabel.text];
-    [detailViewController setImageName:cell.bookImageName];
+    [detailViewController setImageName:[imageNameArray objectAtIndex:indexPath.row]];
     detailViewController.delegate = self;
     [self.navigationController pushViewController:detailViewController animated:YES];
 }
@@ -107,6 +131,7 @@
     //[detailDataArray replaceObjectAtIndex:0 withObject:]
 }
 
+//ボタンの実装
 - (void)saveEditedData:(EditViewController*)controller
 {
     //indexPathを指定してcellを呼び出す。
@@ -121,8 +146,30 @@
     [self.navigationController popViewControllerAnimated:YES];
 }
 
+- (void)addButtonTapped
+{
+    //xibファイルを使い回して同じような画面を作るときは、xibファイルのcustom classをUIViewにして関連づけを断つ。
+    AddViewController *myAddViewController = [[AddViewController alloc]
+                                              initWithNibName:@"EditViewController" bundle:nil];
+    myAddViewController.delegate = self;
+    myAddViewController.indexPathRow = numOfCellRow;
+    myAddViewController.indexPathSection = [self.tableView numberOfSections];
+    UINavigationController *nav = [[UINavigationController alloc]
+                                   initWithRootViewController:myAddViewController];
+    [self.navigationController presentViewController:nav animated:YES completion:nil];
+}
 
-
+- (void)saveAddedData:(AddViewController *)controller
+{
+    //cellの追加は、配列に要素を追加してreloadすればいいみたい。insertは働かなかった。
+    ++numOfCellRow;
+    [bookNameArray insertObject:controller.bookName atIndex:controller.indexPathRow];
+    [priceArray insertObject:controller.price atIndex:controller.indexPathRow];
+    [dateArray insertObject:controller.date atIndex:controller.indexPathRow];
+    //[imageNameArray insertObject:controller.imageName atIndex:controller.indexPathRow];
+    [imageNameArray insertObject:@"20140805161726950.jpg" atIndex:controller.indexPathRow];
+    [self.tableView reloadData];
+}
 
 
 

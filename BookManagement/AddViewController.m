@@ -1,17 +1,17 @@
 //
-//  EditViewController.m
+//  AddViewController.m
 //  BookManagement
 //
-//  Created by 大杉康仁 on 2014/09/02.
+//  Created by 大杉康仁 on 2014/09/05.
 //  Copyright (c) 2014年 ___YOhsugi___. All rights reserved.
 //
 
-#import "EditViewController.h"
+#import "AddViewController.h"
 
 #define keyboardThreshold 50
 #define adjustingScreenEdge 80
 
-@interface EditViewController ()
+@interface AddViewController ()
 {
     UITextField *activeField;
     UIDatePicker *datePicker;
@@ -19,8 +19,9 @@
 
 @end
 
-@implementation EditViewController
+@implementation AddViewController
 
+@synthesize myScrollView;
 @synthesize bookNameTextField;
 @synthesize priceTextField;
 @synthesize dateTextField;
@@ -31,20 +32,30 @@
 @synthesize price;
 @synthesize date;
 @synthesize imageName;
-@synthesize myScrollView;
+
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+{
+    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
+    return self;
+}
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     myScrollView.frame = self.view.bounds;
     UIBarButtonItem *saveButton = [[UIBarButtonItem alloc]
-                   initWithTitle:@"保存"
-                   style:UIBarButtonItemStyleDone
-                   target:self
-                   action:@selector(saveButtonTapped:)
-                   ];
+                                   initWithTitle:@"保存"
+                                   style:UIBarButtonItemStyleBordered
+                                   target:self
+                                   action:@selector(saveButtonTapped)];
     self.navigationItem.rightBarButtonItem = saveButton;
-    self.navigationItem.title = @"書籍編集";
+    UIBarButtonItem *cancelButton = [[UIBarButtonItem alloc]
+                                   initWithTitle:@"閉じる"
+                                   style:UIBarButtonItemStyleBordered
+                                   target:self
+                                   action:@selector(cancelButtonTapped)];
+    self.navigationItem.leftBarButtonItem = cancelButton;
+    self.navigationItem.title = @"書籍追加";
     //シングルタップでキーボードを収納するための設定。
     self.singleTap = [[UITapGestureRecognizer alloc]
                       initWithTarget:self action:@selector(onSingleTap:)];
@@ -58,7 +69,6 @@
     self.priceTextField.text = price;
     self.dateTextField.text = date;
     self.imageView.image = [UIImage imageNamed:imageName];
-
 }
 
 - (void)didReceiveMemoryWarning
@@ -67,26 +77,25 @@
     // Dispose of any resources that can be recreated.
 }
 
-- (void)saveButtonTapped:(id)sender
+- (void)saveButtonTapped
 {
-    //詳細画面において、保存ボタンを押すと実行されるべき事柄
-    //書籍名、金額、日付データを取得し、前のTable画面へデータを渡す。
-    //値の更新
-    if([self.delegate respondsToSelector:@selector(saveEditedData:)]){
+    if([self.delegate respondsToSelector:@selector(saveAddedData:)]){
         self.bookName = self.bookNameTextField.text;
         self.price = self.priceTextField.text;
         self.date = self.dateTextField.text;
-        NSLog(@"indexPath%d bookName%@ price%@ date%@ imageName%@"
-              ,self.indexPathRow,self.bookName,self.price,self.date,self.imageName);
-        [self.delegate saveEditedData:self];
+        [self.delegate saveAddedData:self];
+        [self dismissViewControllerAnimated:YES completion:nil];
     }
 }
 
+- (void)cancelButtonTapped
+{
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
 
-
-
-
-
+/*
+ *以下はTextFieldに関する処理
+ */
 
 //シングルタップでの挙動（キーボード表示の時）
 - (void)onSingleTap:(UITapGestureRecognizer*)recognizer
@@ -163,7 +172,7 @@
      selector:@selector(keyboardWillBeHidden:)
      name:UIKeyboardWillHideNotification
      object:nil];
-
+    
 }
 
 - (void)keyboardWasShown:(NSNotification*)aNotification
@@ -178,9 +187,9 @@
     float afterScreenEdge = screenHeight-activeField.frame.origin.y - activeField.frame.size.height-keyboardFrameEnd.size.height - adjustingScreenEdge;
     if(textFieldEdge > keyboardEdge){
         [UIView animateWithDuration:0.3
-                     animations:^{
-                         myScrollView.frame = CGRectMake(0, afterScreenEdge, myScrollView.frame.size.width, myScrollView.frame.size.height);
-                     }];
+                         animations:^{
+                             myScrollView.frame = CGRectMake(0, afterScreenEdge, myScrollView.frame.size.width, myScrollView.frame.size.height);
+                         }];
     }
 }
 
@@ -207,5 +216,8 @@
     [textField resignFirstResponder];
     return  YES;
 }
+
+
+
 
 @end

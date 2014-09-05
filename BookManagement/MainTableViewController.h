@@ -7,6 +7,6 @@
 //
 
 #import "EditViewController.h"
-@interface MainTableViewController : UITableViewController <EditViewControllerDelegate>
+@interface MainTableViewController : UITableViewController
 
 @end

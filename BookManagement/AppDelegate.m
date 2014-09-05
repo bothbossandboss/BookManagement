@@ -9,6 +9,9 @@
 #import "AppDelegate.h"
 #import "EditViewController.h"
 #import "MainTableViewController.h"
+#import "PropertyViewController.h"
+
+#define setTabBarItemPosition -10
 
 @implementation AppDelegate
 
@@ -16,11 +19,27 @@
 {
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen]bounds]];
     MainTableViewController *mainView = [[MainTableViewController alloc]init];
-    //MainViewController *mainView = [[MainViewController alloc]init];
-    
     UINavigationController *mainNavi = [[UINavigationController alloc]
                                         initWithRootViewController:mainView];
-    self.window.rootViewController = mainNavi;
+    PropertyViewController *propertyView = [[PropertyViewController alloc]init];
+    UINavigationController *propertyNavi = [[UINavigationController alloc]
+                                            initWithRootViewController:propertyView];
+    self.tabBarController = [[UITabBarController alloc]init];
+    self.tabBarController.viewControllers = [NSArray arrayWithObjects:mainNavi,propertyNavi, nil];
+    
+    
+    //TabBarアイコンの設定(ここでタイトルとか設定)
+    UIFont *tabFont = [UIFont fontWithName:@"HelveticaNeue-Bold" size:20.0f];
+    NSDictionary *selectedAttributes = @{NSFontAttributeName:tabFont,NSForegroundColorAttributeName:[UIColor blueColor]};
+    [[UITabBarItem appearance] setTitleTextAttributes:selectedAttributes forState:UIControlStateSelected];
+    NSDictionary *attributesNomal = @{NSFontAttributeName:tabFont,NSForegroundColorAttributeName:[UIColor grayColor]};
+    [[UITabBarItem appearance] setTitleTextAttributes:attributesNomal forState:UIControlStateNormal];
+    UITabBarItem *mainTabBarItem = [self.tabBarController.tabBar.items objectAtIndex:0];
+    mainTabBarItem.title = @"書籍一覧";
+    UITabBarItem *propertyTabBarItem = [self.tabBarController.tabBar.items objectAtIndex:1];
+    propertyTabBarItem.title = @"設定";
+    [[UITabBarItem appearance] setTitlePositionAdjustment:UIOffsetMake(0, setTabBarItemPosition)];
+    self.window.rootViewController = self.tabBarController;
     [self.window makeKeyAndVisible];
     return YES;
 }
