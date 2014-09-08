@@ -6,37 +6,20 @@
 //  Copyright (c) 2014年 ___YOhsugi___. All rights reserved.
 //
 
+//継承用のファイルとxib作っても、xibはinitWithNibNameで追加して初期化しなきゃいけない。
+//xibファイルを使い回して同じような画面を作るときは、xibファイルのcustom classをUIViewにして関連づけを断つ。
+
 #import "EditViewController.h"
 
-#define keyboardThreshold 50
-#define adjustingScreenEdge 80
-
 @interface EditViewController ()
-{
-    UITextField *activeField;
-    UIDatePicker *datePicker;
-}
 
 @end
 
 @implementation EditViewController
 
-@synthesize bookNameTextField;
-@synthesize priceTextField;
-@synthesize dateTextField;
-@synthesize imageView;
-@synthesize indexPathRow;
-@synthesize indexPathSection;
-@synthesize bookName;
-@synthesize price;
-@synthesize date;
-@synthesize imageName;
-@synthesize myScrollView;
-
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    myScrollView.frame = self.view.bounds;
     UIBarButtonItem *saveButton = [[UIBarButtonItem alloc]
                    initWithTitle:@"保存"
                    style:UIBarButtonItemStyleDone
@@ -45,20 +28,13 @@
                    ];
     self.navigationItem.rightBarButtonItem = saveButton;
     self.navigationItem.title = @"書籍編集";
-    //シングルタップでキーボードを収納するための設定。
-    self.singleTap = [[UITapGestureRecognizer alloc]
-                      initWithTarget:self action:@selector(onSingleTap:)];
-    self.singleTap.delegate = self;
-    self.singleTap.numberOfTapsRequired = 1;
-    [self.view addGestureRecognizer:self.singleTap];
-    bookNameTextField.delegate = self;
-    priceTextField.delegate = self;
-    dateTextField.delegate = self;
-    self.bookNameTextField.text = bookName;
-    self.priceTextField.text = price;
-    self.dateTextField.text = date;
-    self.imageView.image = [UIImage imageNamed:imageName];
-
+    self.bookNameTextField.delegate = self;
+    self.priceTextField.delegate = self;
+    self.dateTextField.delegate = self;
+    self.bookNameTextField.text = self.bookName;
+    self.priceTextField.text = self.price;
+    self.dateTextField.text = self.date;
+    self.imageView.image = self.image;
 }
 
 - (void)didReceiveMemoryWarning
@@ -76,136 +52,9 @@
         self.bookName = self.bookNameTextField.text;
         self.price = self.priceTextField.text;
         self.date = self.dateTextField.text;
-        NSLog(@"indexPath%d bookName%@ price%@ date%@ imageName%@"
-              ,self.indexPathRow,self.bookName,self.price,self.date,self.imageName);
+        self.image = self.imageView.image;
+        NSLog(@"indexPath%d bookName%@ price%@ date%@",self.indexPathRow,self.bookName,self.price,self.date);
         [self.delegate saveEditedData:self];
     }
 }
-
-
-
-
-
-
-
-//シングルタップでの挙動（キーボード表示の時）
-- (void)onSingleTap:(UITapGestureRecognizer*)recognizer
-{
-    [self.bookNameTextField resignFirstResponder];
-    [self.priceTextField resignFirstResponder];
-}
-//キーボードが表示されていない時は他に影響を与えないように無効化。
-- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch
-{
-    if(gestureRecognizer == self.singleTap){
-        //キーボード表示中
-        if(self.bookNameTextField.isFirstResponder == YES
-           || self.priceTextField.isFirstResponder == YES){
-            return YES;
-        }else{
-            return NO;
-        }
-    }
-    return  YES;
-}
-//TextField制御
-- (BOOL)textFieldShouldBeginEditing:(UITextField *)textField
-{
-    activeField = textField;
-    if(textField == dateTextField){
-        datePicker = [[UIDatePicker alloc]init];
-        [datePicker setDatePickerMode:UIDatePickerModeDate];
-        [datePicker addTarget:self action:@selector(updateTextField:)
-             forControlEvents:UIControlEventValueChanged];
-        dateTextField.inputView = datePicker;
-        dateTextField.delegate = self;
-        
-        UIToolbar *keyboardDoneButtonView = [[UIToolbar alloc]init];
-        keyboardDoneButtonView.barStyle  = UIBarStyleBlack;
-        keyboardDoneButtonView.translucent = YES;
-        keyboardDoneButtonView.tintColor = nil;
-        [keyboardDoneButtonView sizeToFit];
-        
-        // 完了ボタンとSpacerの配置
-        UIBarButtonItem *doneButton = [[UIBarButtonItem alloc]initWithTitle:@"完了" style:UIBarButtonItemStyleBordered target:self action:@selector(pickerDoneTapped)];
-        UIBarButtonItem *spacer1 = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
-        UIBarButtonItem *spacer = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
-        [keyboardDoneButtonView setItems:[NSArray arrayWithObjects:spacer,spacer1,doneButton,nil]];
-        // Viewの配置
-        textField.inputAccessoryView = keyboardDoneButtonView;
-    }
-    return YES;
-}
-
-- (void)updateTextField:(id)sender
-{
-    UIDatePicker *picker = (UIDatePicker *)sender;
-    NSDateFormatter *df = [[NSDateFormatter alloc]init];
-    df.dateFormat = @"yyyy/MM/dd";
-    self.dateTextField.text = [df stringFromDate:picker.date];
-}
-
-- (void)pickerDoneTapped
-{
-    [self.dateTextField resignFirstResponder];
-    activeField = nil;
-}
-
-- (void)viewWillAppear:(BOOL)animated
-{
-    [[NSNotificationCenter defaultCenter]
-     addObserver:self
-     selector:@selector(keyboardWasShown:)
-     name:UIKeyboardDidShowNotification
-     object:nil];
-    [[NSNotificationCenter defaultCenter]
-     addObserver:self
-     selector:@selector(keyboardWillBeHidden:)
-     name:UIKeyboardWillHideNotification
-     object:nil];
-
-}
-
-- (void)keyboardWasShown:(NSNotification*)aNotification
-{
-    NSDictionary *userInfo;
-    userInfo = [aNotification userInfo];
-    CGRect keyboardFrameEnd = [[userInfo objectForKey:UIKeyboardFrameEndUserInfoKey]CGRectValue];
-    CGRect screenBounds = [[UIScreen mainScreen]bounds];
-    float screenHeight = screenBounds.size.height;
-    float textFieldEdge = activeField.frame.origin.y + activeField.frame.size.height;
-    float keyboardEdge = screenHeight-keyboardFrameEnd.size.height - keyboardThreshold;
-    float afterScreenEdge = screenHeight-activeField.frame.origin.y - activeField.frame.size.height-keyboardFrameEnd.size.height - adjustingScreenEdge;
-    if(textFieldEdge > keyboardEdge){
-        [UIView animateWithDuration:0.3
-                     animations:^{
-                         myScrollView.frame = CGRectMake(0, afterScreenEdge, myScrollView.frame.size.width, myScrollView.frame.size.height);
-                     }];
-    }
-}
-
-- (void)keyboardWillBeHidden:(NSNotification*)aNotification
-{
-    [UIView animateWithDuration:0.2
-                     animations:^{
-                         myScrollView.frame = CGRectMake(0, 0,
-                                                          myScrollView.frame.size.width,
-                                                          myScrollView.frame.size.height);
-                     }];
-    activeField = nil;
-}
-
-
-- (BOOL)textFieldShouldReturn:(UITextField *)textField
-{
-    [UIView animateWithDuration:0.2
-                     animations:^{
-                         myScrollView.frame = CGRectMake(0, 0,
-                                                          myScrollView.frame.size.width,
-                                                          myScrollView.frame.size.height);
-                     }];
-    [textField resignFirstResponder];
-    return  YES;
-}
-
 @end

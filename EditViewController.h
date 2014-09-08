@@ -7,27 +7,13 @@
 //
 
 //循環参照を避けるため、@protocol ~;   --->  @protocol ~ <NSObject> ....@endと書く。
+#import "DetailViewController.h"
+
 @protocol EditViewControllerDelegate;
 
-@interface EditViewController : UIViewController
-<UITextFieldDelegate, UIGestureRecognizerDelegate>
-
-@property int indexPathRow;
-@property int indexPathSection;
-@property (weak, nonatomic)NSString *bookName;
-@property (weak, nonatomic)NSString *price;
-@property (weak, nonatomic)NSString *date;
-@property (weak, nonatomic)NSString *imageName;
-
-@property (weak, nonatomic) IBOutlet UITextField *bookNameTextField;
-@property (weak, nonatomic) IBOutlet UITextField *priceTextField;
-@property (weak, nonatomic) IBOutlet UIScrollView *myScrollView;
-@property (weak, nonatomic) IBOutlet UITextField *dateTextField;
-@property (strong, nonatomic) IBOutlet UIImageView* imageView;
-@property (weak, nonatomic) IBOutlet UIButton *imageSelectButton;
+@interface EditViewController : DetailViewController <UITextFieldDelegate>
 
 @property (weak, nonatomic) id<EditViewControllerDelegate> delegate;
-@property (strong, nonatomic) UITapGestureRecognizer *singleTap;
 
 @end
 

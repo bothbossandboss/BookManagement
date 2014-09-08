@@ -12,6 +12,9 @@
 		7F0CA98919B99A6B00B765D0 /* PropertyViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7F0CA98719B99A6B00B765D0 /* PropertyViewController.xib */; };
 		7F0CA9D119B9B89F00B765D0 /* AccountViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7F0CA9CF19B9B89F00B765D0 /* AccountViewController.m */; };
 		7F0CA9D219B9B89F00B765D0 /* AccountViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7F0CA9D019B9B89F00B765D0 /* AccountViewController.xib */; };
+		7F0CE12D19BD863200ECCEC2 /* DetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7F0CE12B19BD863200ECCEC2 /* DetailViewController.m */; };
+		7F0CE12E19BD863200ECCEC2 /* DetailViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7F0CE12C19BD863200ECCEC2 /* DetailViewController.xib */; };
+		7F0CE13019BDB2F900ECCEC2 /* pnenoimgs011.gif in Resources */ = {isa = PBXBuildFile; fileRef = 7F0CE12F19BDB2F900ECCEC2 /* pnenoimgs011.gif */; };
 		7FA697A719B54E6600A8A742 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7FA697A619B54E6600A8A742 /* Foundation.framework */; };
 		7FA697A919B54E6600A8A742 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7FA697A819B54E6600A8A742 /* CoreGraphics.framework */; };
 		7FA697AB19B54E6600A8A742 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7FA697AA19B54E6600A8A742 /* UIKit.framework */; };
@@ -25,7 +28,6 @@
 		7FA697D019B54E6600A8A742 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 7FA697CE19B54E6600A8A742 /* InfoPlist.strings */; };
 		7FA697D219B54E6600A8A742 /* BookManagementTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 7FA697D119B54E6600A8A742 /* BookManagementTests.m */; };
 		7FA697DE19B54F1B00A8A742 /* EditViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7FA697DC19B54F1B00A8A742 /* EditViewController.m */; };
-		7FA697DF19B54F1B00A8A742 /* EditViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7FA697DD19B54F1B00A8A742 /* EditViewController.xib */; };
 		7FA697E319B55C7900A8A742 /* MainTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7FA697E119B55C7900A8A742 /* MainTableViewController.m */; };
 		7FA697E419B55C7900A8A742 /* MainTableViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7FA697E219B55C7900A8A742 /* MainTableViewController.xib */; };
 		7FA697E819B5783800A8A742 /* DetailTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7FA697E619B5783800A8A742 /* DetailTableViewCell.m */; };
@@ -54,6 +56,10 @@
 		7F0CA9CE19B9B89F00B765D0 /* AccountViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AccountViewController.h; sourceTree = "<group>"; };
 		7F0CA9CF19B9B89F00B765D0 /* AccountViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AccountViewController.m; sourceTree = "<group>"; };
 		7F0CA9D019B9B89F00B765D0 /* AccountViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AccountViewController.xib; sourceTree = "<group>"; };
+		7F0CE12A19BD863200ECCEC2 /* DetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DetailViewController.h; sourceTree = "<group>"; };
+		7F0CE12B19BD863200ECCEC2 /* DetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DetailViewController.m; sourceTree = "<group>"; };
+		7F0CE12C19BD863200ECCEC2 /* DetailViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = DetailViewController.xib; sourceTree = "<group>"; };
+		7F0CE12F19BDB2F900ECCEC2 /* pnenoimgs011.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = pnenoimgs011.gif; sourceTree = "<group>"; };
 		7FA697A319B54E6600A8A742 /* BookManagement.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BookManagement.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7FA697A619B54E6600A8A742 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		7FA697A819B54E6600A8A742 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -72,7 +78,6 @@
 		7FA697D119B54E6600A8A742 /* BookManagementTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BookManagementTests.m; sourceTree = "<group>"; };
 		7FA697DB19B54F1B00A8A742 /* EditViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EditViewController.h; path = ../EditViewController.h; sourceTree = "<group>"; };
 		7FA697DC19B54F1B00A8A742 /* EditViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EditViewController.m; path = ../EditViewController.m; sourceTree = "<group>"; };
-		7FA697DD19B54F1B00A8A742 /* EditViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = EditViewController.xib; path = ../EditViewController.xib; sourceTree = "<group>"; };
 		7FA697E019B55C7900A8A742 /* MainTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainTableViewController.h; sourceTree = "<group>"; };
 		7FA697E119B55C7900A8A742 /* MainTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = MainTableViewController.m; sourceTree = "<group>"; };
 		7FA697E219B55C7900A8A742 /* MainTableViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MainTableViewController.xib; sourceTree = "<group>"; };
@@ -141,6 +146,7 @@
 		7FA697AC19B54E6600A8A742 /* BookManagement */ = {
 			isa = PBXGroup;
 			children = (
+				7F0CE12F19BDB2F900ECCEC2 /* pnenoimgs011.gif */,
 				7FA697EA19B579BF00A8A742 /* 6fe029a2.jpg */,
 				7FA697EB19B579BF00A8A742 /* 1920_1080_20100420011049652500.jpg */,
 				7FA697EC19B579BF00A8A742 /* 20140805161726950.jpg */,
@@ -148,7 +154,9 @@
 				7F0CA97E19B9465300B765D0 /* AddViewController.m */,
 				7FA697DB19B54F1B00A8A742 /* EditViewController.h */,
 				7FA697DC19B54F1B00A8A742 /* EditViewController.m */,
-				7FA697DD19B54F1B00A8A742 /* EditViewController.xib */,
+				7F0CE12A19BD863200ECCEC2 /* DetailViewController.h */,
+				7F0CE12B19BD863200ECCEC2 /* DetailViewController.m */,
+				7F0CE12C19BD863200ECCEC2 /* DetailViewController.xib */,
 				7FA697E019B55C7900A8A742 /* MainTableViewController.h */,
 				7FA697E119B55C7900A8A742 /* MainTableViewController.m */,
 				7FA697E219B55C7900A8A742 /* MainTableViewController.xib */,
@@ -277,12 +285,13 @@
 				7FA697BF19B54E6600A8A742 /* Images.xcassets in Resources */,
 				7FA697E919B5783800A8A742 /* DetailTableViewCell.xib in Resources */,
 				7FA697ED19B579BF00A8A742 /* 6fe029a2.jpg in Resources */,
-				7FA697DF19B54F1B00A8A742 /* EditViewController.xib in Resources */,
+				7F0CE12E19BD863200ECCEC2 /* DetailViewController.xib in Resources */,
 				7F0CA9D219B9B89F00B765D0 /* AccountViewController.xib in Resources */,
 				7FA697B119B54E6600A8A742 /* InfoPlist.strings in Resources */,
 				7FA697EF19B579BF00A8A742 /* 20140805161726950.jpg in Resources */,
 				7F0CA98919B99A6B00B765D0 /* PropertyViewController.xib in Resources */,
 				7FA697EE19B579BF00A8A742 /* 1920_1080_20100420011049652500.jpg in Resources */,
+				7F0CE13019BDB2F900ECCEC2 /* pnenoimgs011.gif in Resources */,
 				7FA697E419B55C7900A8A742 /* MainTableViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -304,6 +313,7 @@
 			files = (
 				7FA697B719B54E6600A8A742 /* AppDelegate.m in Sources */,
 				7FA697E819B5783800A8A742 /* DetailTableViewCell.m in Sources */,
+				7F0CE12D19BD863200ECCEC2 /* DetailViewController.m in Sources */,
 				7F0CA98819B99A6B00B765D0 /* PropertyViewController.m in Sources */,
 				7F0CA97F19B9465300B765D0 /* AddViewController.m in Sources */,
 				7FA697DE19B54F1B00A8A742 /* EditViewController.m in Sources */,
