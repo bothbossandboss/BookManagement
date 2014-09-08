@@ -55,6 +55,10 @@
     self.navigationItem.leftBarButtonItem = cancelButton;
     self.singleTap = [[UITapGestureRecognizer alloc]
                       initWithTarget:self action:@selector(onSingleTap:)];
+    }
+
+- (void)viewDidAppear:(BOOL)animated
+{
     self.singleTap.delegate = self;
     self.singleTap.numberOfTapsRequired = 1;
     [self.view addGestureRecognizer:self.singleTap];

@@ -8,5 +8,4 @@
 
 #import "EditViewController.h"
 @interface MainTableViewController : UITableViewController
-
 @end

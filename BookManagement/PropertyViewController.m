@@ -6,6 +6,12 @@
 //  Copyright (c) 2014年 ___YOhsugi___. All rights reserved.
 //
 
+/*
+ *アプリ初回起動時にAccountViewControllerを表示させるが、この時、accountSetButtonTappedが先に呼ばれ、
+ *その後viewDidLoadが呼ばれる。これにより、accountInfoが初期値で初期化されず、
+ *Account画面のメール、パスワード、確認は全て空欄となる。
+ */
+
 #import "PropertyViewController.h"
 #import "AccountViewController.h"
 
@@ -35,13 +41,13 @@
 {
     [super viewDidLoad];
     self.title = @"設定";
-    [accountSetButton  addTarget:self action:@selector(accountSetButtonTapped) forControlEvents:UIControlEventTouchDown];
+    accountInfo = [[NSMutableArray alloc]init];
     //アカウント情報の設定
     NSString *firstMailAddress = @"01234@56789.com";
     NSString *firstPassword = @"0123456789";
-    accountInfo = [[NSMutableArray alloc]init];
     [accountInfo insertObject:firstMailAddress atIndex:MAIL];
     [accountInfo insertObject:firstPassword atIndex:PASSWORD];
+    [accountSetButton  addTarget:self action:@selector(accountSetButtonTapped) forControlEvents:UIControlEventTouchDown];
 }
 
 - (void)didReceiveMemoryWarning
@@ -52,6 +58,7 @@
 
 - (void)accountSetButtonTapped
 {
+    NSLog(@"(accSBT)MAIL:%@ PASS:%@",[accountInfo objectAtIndex:MAIL],[accountInfo objectAtIndex:PASSWORD]);
     AccountViewController *accountViewController = [[AccountViewController alloc]init];
     accountViewController.delegate = self;
     accountViewController.mailAddress = [accountInfo objectAtIndex:MAIL];
@@ -66,7 +73,17 @@
 {
     [accountInfo insertObject:controller.mailAddress atIndex:MAIL];
     [accountInfo insertObject:controller.password atIndex:PASSWORD];
-    NSLog(@"MAIL:%@ PASS:%@",[accountInfo objectAtIndex:MAIL],[accountInfo objectAtIndex:PASSWORD]);
+    NSLog(@"(saved)MAIL:%@ PASS:%@",[accountInfo objectAtIndex:MAIL],[accountInfo objectAtIndex:PASSWORD]);
 }
+
+//アプリ初回起動時に、ユーザーのアカウント情報をAppDelegate内で取得して、その情報をAccountViewControllerに反映させる。
+- (void)setAccountInfo:(NSString*)firstLaunchMail label:(NSString*)firstLaunchPass
+{
+     accountInfo = [[NSMutableArray alloc]init];
+    [accountInfo insertObject:firstLaunchMail atIndex:MAIL];
+    [accountInfo insertObject:firstLaunchPass atIndex:PASSWORD];
+}
+
+
 
 @end

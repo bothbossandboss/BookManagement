@@ -58,8 +58,27 @@
                                    target:self
                                    action:@selector(addButtonTapped)
                                    ];
-    self.navigationItem.rightBarButtonItem = addButton;    
-    [self.tableView registerNib:[UINib nibWithNibName:@"DetailTableViewCell" bundle:nil] forCellReuseIdentifier:@"Cell"];
+    self.navigationItem.rightBarButtonItem = addButton;
+       [self.tableView registerNib:[UINib nibWithNibName:@"DetailTableViewCell" bundle:nil] forCellReuseIdentifier:@"Cell"];
+}
+/*
+- (UIView*)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
+{
+    UIButton *moreButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    [moreButton setTitle:@"*もっと読み込む*" forState:UIControlStateNormal];
+    [moreButton addTarget:self action:@selector(reloadMoreData) forControlEvents:UIControlEventTouchUpInside];
+    return moreButton;
+}
+*/
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView
+{
+    //一番下までスクロールしたかどうか判定して読み込み
+    if(self.tableView.contentOffset.y >= (self.tableView.contentSize.height - self.tableView.bounds.size.height)){
+        NSLog(@"最後までスクロールした");
+    }
+ 
+ 
 }
 
 - (void)didReceiveMemoryWarning
@@ -172,6 +191,10 @@
     [self.tableView reloadData];
 }
 
-
+- (void)reloadMoreData
+{
+    //昔のcellを取得して表示する。
+    NSLog(@"reloadMoreData");
+}
 
 @end

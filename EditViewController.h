@@ -24,6 +24,7 @@
 @property (weak, nonatomic) IBOutlet UIScrollView *myScrollView;
 @property (weak, nonatomic) IBOutlet UITextField *dateTextField;
 @property (strong, nonatomic) IBOutlet UIImageView* imageView;
+@property (weak, nonatomic) IBOutlet UIButton *imageSelectButton;
 
 @property (weak, nonatomic) id<EditViewControllerDelegate> delegate;
 @property (strong, nonatomic) UITapGestureRecognizer *singleTap;
