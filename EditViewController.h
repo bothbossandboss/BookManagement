@@ -18,5 +18,7 @@
 @end
 
 @protocol EditViewControllerDelegate <NSObject>
+
 - (void)saveEditedData:(EditViewController*)controller;
+
 @end

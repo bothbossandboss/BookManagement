@@ -22,18 +22,15 @@
 {
     NSMutableArray *accountInfo;
 }
-
 @end
 
 @implementation PropertyViewController
 @synthesize accountSetButton;
 
+#pragma mark - the life cycle of view
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self) {
-        // Custom initialization
-    }
     return self;
 }
 
@@ -56,6 +53,7 @@
     // Dispose of any resources that can be recreated.
 }
 
+#pragma mark - private method
 - (void)accountSetButtonTapped
 {
     NSLog(@"(accSBT)MAIL:%@ PASS:%@",[accountInfo objectAtIndex:MAIL],[accountInfo objectAtIndex:PASSWORD]);
@@ -69,6 +67,7 @@
     
 }
 
+#pragma mark - public method
 - (void)saveEditedAccountInfo:(AccountViewController *)controller
 {
     [accountInfo insertObject:controller.mailAddress atIndex:MAIL];
@@ -83,7 +82,5 @@
     [accountInfo insertObject:firstLaunchMail atIndex:MAIL];
     [accountInfo insertObject:firstLaunchPass atIndex:PASSWORD];
 }
-
-
 
 @end

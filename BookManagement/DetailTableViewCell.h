@@ -8,6 +8,7 @@
 
 
 @interface DetailTableViewCell : UITableViewCell
+
 @property (weak, nonatomic) IBOutlet UILabel *bookNameLabel;
 @property (weak, nonatomic) IBOutlet UILabel *priceLabel;
 @property (weak, nonatomic) IBOutlet UILabel *dateLabel;

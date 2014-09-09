@@ -6,10 +6,10 @@
 //  Copyright (c) 2014年 ___YOhsugi___. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
-
 @interface PropertyViewController : UIViewController
+
 @property (strong, nonatomic) IBOutlet UIButton *accountSetButton;
 - (void)accountSetButtonTapped;
 - (void)setAccountInfo:(NSString*)firstLaunchMail label:(NSString*)firstLaunchPass;
+
 @end

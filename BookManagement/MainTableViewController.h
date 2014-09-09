@@ -6,6 +6,6 @@
 //  Copyright (c) 2014年 ___YOhsugi___. All rights reserved.
 //
 
-#import "EditViewController.h"
+
 @interface MainTableViewController : UITableViewController
 @end

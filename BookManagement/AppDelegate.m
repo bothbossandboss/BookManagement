@@ -9,10 +9,18 @@
 #import "AppDelegate.h"
 #import "EditViewController.h"
 #import "MainTableViewController.h"
-#import "PropertyViewController.h"
 #import "AccountViewController.h"
+#import "PropertyViewController.h"
 
 #define setTabBarItemPosition -10
+
+@interface AppDelegate()
+{
+    UITabBarController *tabBarController;
+    PropertyViewController *propertyView;
+    UINavigationController *propertyNavi;
+}
+@end
 
 @implementation AppDelegate 
 
@@ -25,8 +33,8 @@
     propertyView = [[PropertyViewController alloc]init];
     propertyNavi = [[UINavigationController alloc]
                     initWithRootViewController:propertyView];
-    self.tabBarController = [[UITabBarController alloc]init];
-    self.tabBarController.viewControllers = [NSArray arrayWithObjects:mainNavi,propertyNavi, nil];
+    tabBarController = [[UITabBarController alloc]init];
+    tabBarController.viewControllers = [NSArray arrayWithObjects:mainNavi,propertyNavi, nil];
     //TabBarアイコンの設定(ここでタイトルとか設定)
     UIFont *tabFont = [UIFont fontWithName:@"HelveticaNeue-Bold" size:20.0f];
     NSDictionary *selectedAttributes = @{NSFontAttributeName:tabFont,NSForegroundColorAttributeName:[UIColor blueColor]};
@@ -35,12 +43,12 @@
     NSDictionary *attributesNomal = @{NSFontAttributeName:tabFont,NSForegroundColorAttributeName:[UIColor grayColor]};
     [[UITabBarItem appearance] setTitleTextAttributes:attributesNomal
                                                  forState:UIControlStateNormal];
-    UITabBarItem *mainTabBarItem = [self.tabBarController.tabBar.items objectAtIndex:0];
+    UITabBarItem *mainTabBarItem = [tabBarController.tabBar.items objectAtIndex:0];
     mainTabBarItem.title = @"書籍一覧";
-    UITabBarItem *propertyTabBarItem = [self.tabBarController.tabBar.items objectAtIndex:1];
+    UITabBarItem *propertyTabBarItem = [tabBarController.tabBar.items objectAtIndex:1];
     propertyTabBarItem.title = @"設定";
     [[UITabBarItem appearance] setTitlePositionAdjustment:UIOffsetMake(0, setTabBarItemPosition)];
-    self.window.rootViewController = self.tabBarController;
+    self.window.rootViewController = tabBarController;
     [self.window makeKeyAndVisible];
     [self performSelector:@selector(firstLogin) withObject:nil afterDelay:0.2];
     return YES;
@@ -53,7 +61,7 @@
      */
     if (![[NSUserDefaults standardUserDefaults]boolForKey:@"HasLaunchedOnce"]) {
         NSLog(@"first");
-        self.tabBarController.selectedViewController = propertyNavi;
+        tabBarController.selectedViewController = propertyNavi;
         //データベースから登録済みユーザーのアカウント情報を取得しAccount画面に反映させる。
         //今はある初期値を代入している。
         NSString *mail = @"abcd@efg.com";

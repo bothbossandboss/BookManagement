@@ -11,12 +11,9 @@
 
 #import "EditViewController.h"
 
-@interface EditViewController ()
-
-@end
-
 @implementation EditViewController
 
+#pragma mark - the life cycle of view
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -43,11 +40,11 @@
     // Dispose of any resources that can be recreated.
 }
 
+#pragma mark - private method
 - (void)saveButtonTapped:(id)sender
 {
     //詳細画面において、保存ボタンを押すと実行されるべき事柄
     //書籍名、金額、日付データを取得し、前のTable画面へデータを渡す。
-    //値の更新
     if([self.delegate respondsToSelector:@selector(saveEditedData:)]){
         self.bookName = self.bookNameTextField.text;
         self.price = self.priceTextField.text;
@@ -57,4 +54,5 @@
         [self.delegate saveEditedData:self];
     }
 }
+
 @end

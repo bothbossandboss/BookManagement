@@ -11,8 +11,8 @@
 
 #import "DetailViewController.h"
 
-#define keyboardThreshold 50
-#define adjustingScreenEdge 80
+#define KEYBOARD_THRESHOLD 50
+#define ADJUSTING_SCREEN_EDGE 80
 
 @interface DetailViewController ()
 <UITextFieldDelegate, UIGestureRecognizerDelegate,
@@ -24,7 +24,6 @@ UIImagePickerControllerDelegate, UINavigationControllerDelegate>
 @end
 
 @implementation DetailViewController
-
 
 @synthesize indexPathRow;
 @synthesize indexPathSection;
@@ -39,6 +38,7 @@ UIImagePickerControllerDelegate, UINavigationControllerDelegate>
 @synthesize price;
 @synthesize date;
 
+#pragma mark - the life cycle of view
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -58,13 +58,13 @@ UIImagePickerControllerDelegate, UINavigationControllerDelegate>
     [self.imageSelectButton addTarget:self action:@selector(selectImage) forControlEvents:UIControlEventTouchDown];
 }
 
-
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
 
+#pragma mark - private method
 - (void)selectImage
 {
     NSLog(@"selectImage");
@@ -89,6 +89,7 @@ UIImagePickerControllerDelegate, UINavigationControllerDelegate>
     [self.bookNameTextField resignFirstResponder];
     [self.priceTextField resignFirstResponder];
 }
+
 //キーボードが表示されていない時は他に影響を与えないように無効化。
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch
 {
@@ -103,6 +104,7 @@ UIImagePickerControllerDelegate, UINavigationControllerDelegate>
     }
     return  YES;
 }
+
 //TextField制御
 - (BOOL)textFieldShouldBeginEditing:(UITextField *)textField
 {
@@ -169,8 +171,8 @@ UIImagePickerControllerDelegate, UINavigationControllerDelegate>
     CGRect screenBounds = [[UIScreen mainScreen]bounds];
     float screenHeight = screenBounds.size.height;
     float textFieldEdge = activeField.frame.origin.y + activeField.frame.size.height;
-    float keyboardEdge = screenHeight-keyboardFrameEnd.size.height - keyboardThreshold;
-    float afterScreenEdge = screenHeight-activeField.frame.origin.y - activeField.frame.size.height-keyboardFrameEnd.size.height - adjustingScreenEdge;
+    float keyboardEdge = screenHeight-keyboardFrameEnd.size.height - KEYBOARD_THRESHOLD;
+    float afterScreenEdge = screenHeight-activeField.frame.origin.y - activeField.frame.size.height-keyboardFrameEnd.size.height - ADJUSTING_SCREEN_EDGE;
     if(textFieldEdge > keyboardEdge){
         [UIView animateWithDuration:0.3
                          animations:^{
@@ -190,7 +192,6 @@ UIImagePickerControllerDelegate, UINavigationControllerDelegate>
     activeField = nil;
 }
 
-
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
 {
     [UIView animateWithDuration:0.2
@@ -202,6 +203,5 @@ UIImagePickerControllerDelegate, UINavigationControllerDelegate>
     [textField resignFirstResponder];
     return  YES;
 }
-
 
 @end

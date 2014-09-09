@@ -11,8 +11,8 @@
 #import "DetailTableViewCell.h"
 #import "AddViewController.h"
 
-#define numOfFirstCellRow 10
-#define cellHeight 90
+#define NUM_OF_FIRST_CELL_ROW 10
+#define CELL_HEIGHT 90
 
 @interface MainTableViewController () <EditViewControllerDelegate, AddViewControllerDelegate>
 {
@@ -22,22 +22,22 @@
     NSMutableArray *dateArray;
     NSMutableArray *imageArray;
 }
-
 @end
 
 @implementation MainTableViewController
 
+#pragma mark - the life cycle of view
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     self.title = @"書籍一覧";
-    numOfCellRow = numOfFirstCellRow;
+    numOfCellRow = NUM_OF_FIRST_CELL_ROW;
     bookNameArray = [[NSMutableArray alloc]init];
     priceArray = [[NSMutableArray alloc]init];
     dateArray = [[NSMutableArray alloc]init];
     imageArray = [[NSMutableArray alloc]init];
     int i;
-    for(i=0;i<numOfFirstCellRow;i++){
+    for(i=0;i<NUM_OF_FIRST_CELL_ROW;i++){
         NSMutableString *str = [[NSMutableString alloc] initWithFormat:@"row%d",i];
         [bookNameArray insertObject:str atIndex:i];
         str = [[NSMutableString alloc] initWithFormat:@"%d円",i*100];
@@ -45,13 +45,6 @@
         str = [[NSMutableString alloc] initWithFormat:@"2014/9/%d",i];
         [dateArray insertObject:str atIndex:i];
         UIImage *randomImage;
-        /*
-        srand((unsigned int)time(NULL));
-        int n = rand() % 3;
-        if(n == 0) randomImage = [UIImage imageNamed:@"20140805161726950.jpg"];
-        else if(n == 1) randomImage = [UIImage imageNamed:@"1920_1080_20100420011049652500.jpg"];
-        else randomImage = [UIImage imageNamed:@"6fe029a2.jpg"];
-        */
         randomImage = [UIImage imageNamed:@"6fe029a2.jpg"];
         [imageArray insertObject:randomImage atIndex:i];
     }
@@ -93,12 +86,8 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    //cellのxibファイルを指定したことで、以下のcellがnilになることは無い。
     DetailTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell"];
-    //cellのxibファイルを指定しカスタマイズしたことで、以下のif文は実際はいらない。
-    /*
-    if(cell == nil){
-        cell = [[DetailTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"Cell"];
-    }*/
     cell.bookNameLabel.adjustsFontSizeToFitWidth = YES;
     cell.priceLabel.adjustsFontSizeToFitWidth = YES;
     cell.dateLabel.adjustsFontSizeToFitWidth = YES;
@@ -111,9 +100,10 @@
 //cellの大きさ（高さ）の設定。
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return cellHeight;
+    return CELL_HEIGHT;
 }
 
+#pragma mark - private method
 //cellが選択された時に呼ばれるメソッド
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -140,6 +130,25 @@
     [self.navigationController pushViewController:detailViewController animated:YES];
 }
 
+- (void)addButtonTapped
+{
+    AddViewController *myAddViewController = [[AddViewController alloc]
+                                              initWithNibName:@"DetailViewController" bundle:nil];
+    myAddViewController.delegate = self;
+    myAddViewController.indexPathRow = numOfCellRow;
+    myAddViewController.indexPathSection = [self.tableView numberOfSections];
+    UINavigationController *nav = [[UINavigationController alloc]
+                                   initWithRootViewController:myAddViewController];
+    [self.navigationController presentViewController:nav animated:YES completion:nil];
+}
+
+- (void)reloadMoreData
+{
+    //昔のcellを取得して表示する。
+    NSLog(@"reloadMoreData");
+}
+
+#pragma mark - public method
 //ボタンの実装
 - (void)saveEditedData:(EditViewController*)controller
 {
@@ -162,18 +171,6 @@
     [self.navigationController popViewControllerAnimated:YES];
 }
 
-- (void)addButtonTapped
-{
-    AddViewController *myAddViewController = [[AddViewController alloc]
-                                              initWithNibName:@"DetailViewController" bundle:nil];
-    myAddViewController.delegate = self;
-    myAddViewController.indexPathRow = numOfCellRow;
-    myAddViewController.indexPathSection = [self.tableView numberOfSections];
-    UINavigationController *nav = [[UINavigationController alloc]
-                                   initWithRootViewController:myAddViewController];
-    [self.navigationController presentViewController:nav animated:YES completion:nil];
-}
-
 - (void)saveAddedData:(AddViewController *)controller
 {
     //cellの追加は、配列に要素を追加してreloadすればいいみたい。insertは働かなかった。
@@ -186,12 +183,6 @@
     }
     [imageArray insertObject:controller.image atIndex:controller.indexPathRow];
     [self.tableView reloadData];
-}
-
-- (void)reloadMoreData
-{
-    //昔のcellを取得して表示する。
-    NSLog(@"reloadMoreData");
 }
 
 @end

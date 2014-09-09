@@ -6,12 +6,25 @@
 //  Copyright (c) 2014年 ___YOhsugi___. All rights reserved.
 //
 
+/*
+ * <キーボード表示/非表示におけるScrollViewの処理について>
+ * このコードにおいてviewDidLoadでmyScrollView.frame = self.view.bounds;を行っているが、この時の
+ * self.view.boundsは、(0,0,320,568)である。
+ * 一方、viewDidApperでは、viewDidLoad内でnavigationBarを表示させているため、self.view.boundsはnavigationBarを
+ * 除いた範囲の大きさしかない。
+ * よって、キーボード処理ではnavigationBar分を考慮する必要がある。(ここでは#define NAVIGATION_BAR_HEIGHT 88)
+ * 他の方法の一つはxibファイルで大きさを確定してコードではmyScrollViewの大きさをいじらないことだが、それは少し面倒か。
+ * 又は、DetailViewControllerのように、xibファイルでnavigationBarやtabBarの大きさを意識せずに作ってしまうか。
+ * この時はxibのviewがnavigationBarやtabBarを除いた範囲であることに注意。(だから全体的に上にobjectがある。)
+ */
+
 #import "AccountViewController.h"
 
-#define keyboardThreshold 50
-#define adjustingScreenEdge 80
+#define KEYBOARD_THRESHOLD 10
+#define ADJUSTING_SCREEN_EDGE 80
+#define NAVIGATION_BAR_HEIGHT 88
 
-@interface AccountViewController ()
+@interface AccountViewController () <UITextFieldDelegate, UIGestureRecognizerDelegate>
 {
     UITextField *activeField;
 }
@@ -27,19 +40,16 @@
 @synthesize mailAddress;
 @synthesize password;
 
+#pragma mark - the life cycle of view
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self) {
-        // Custom initialization
-    }
     return self;
 }
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    myScrollView.frame = self.view.bounds;
     self.title = @"アカウント設定";
     UIBarButtonItem *saveButton = [[UIBarButtonItem alloc]
                                    initWithTitle:@"保存"
@@ -55,7 +65,8 @@
     self.navigationItem.leftBarButtonItem = cancelButton;
     self.singleTap = [[UITapGestureRecognizer alloc]
                       initWithTarget:self action:@selector(onSingleTap:)];
-    }
+    myScrollView.frame = self.view.bounds;
+}
 
 - (void)viewDidAppear:(BOOL)animated
 {
@@ -76,6 +87,7 @@
     // Dispose of any resources that can be recreated.
 }
 
+#pragma mark - private method
 - (void)saveButtonTapped
 {
     //文字列(NSString)の比較はisEqualToString:を用いる。(==)ではだめ。
@@ -97,7 +109,6 @@
             [self dismissViewControllerAnimated:YES completion:nil];
         }
     }
-    
 }
 
 - (void)cancelButtonTapped
@@ -112,6 +123,7 @@
     [self.passwordTextField resignFirstResponder];
     [self.confirmTextField resignFirstResponder];
 }
+
 //キーボードが表示されていない時は他に影響を与えないように無効化。
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch
 {
@@ -127,6 +139,7 @@
     }
     return  YES;
 }
+
 //TextField制御
 - (BOOL)textFieldShouldBeginEditing:(UITextField *)textField
 {
@@ -157,8 +170,8 @@
     CGRect screenBounds = [[UIScreen mainScreen]bounds];
     float screenHeight = screenBounds.size.height;
     float textFieldEdge = activeField.frame.origin.y + activeField.frame.size.height;
-    float keyboardEdge = screenHeight-keyboardFrameEnd.size.height - keyboardThreshold;
-    float afterScreenEdge = screenHeight-activeField.frame.origin.y - activeField.frame.size.height-keyboardFrameEnd.size.height - adjustingScreenEdge;
+    float keyboardEdge = screenHeight-keyboardFrameEnd.size.height - KEYBOARD_THRESHOLD;
+    float afterScreenEdge = screenHeight-activeField.frame.origin.y - activeField.frame.size.height-keyboardFrameEnd.size.height - ADJUSTING_SCREEN_EDGE;
     if(textFieldEdge > keyboardEdge){
         [UIView animateWithDuration:0.3
                          animations:^{
@@ -171,25 +184,23 @@
 {
     [UIView animateWithDuration:0.2
                      animations:^{
-                         myScrollView.frame = CGRectMake(0, 0,
+                         myScrollView.frame = CGRectMake(0, -NAVIGATION_BAR_HEIGHT,
                                                          myScrollView.frame.size.width,
                                                          myScrollView.frame.size.height);
                      }];
     activeField = nil;
 }
 
-
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
 {
     [UIView animateWithDuration:0.2
                      animations:^{
-                         myScrollView.frame = CGRectMake(0, 0,
+                         myScrollView.frame = CGRectMake(0, -NAVIGATION_BAR_HEIGHT,
                                                          myScrollView.frame.size.width,
                                                          myScrollView.frame.size.height);
                      }];
     [textField resignFirstResponder];
     return  YES;
 }
-
 
 @end

@@ -6,17 +6,8 @@
 //  Copyright (c) 2014年 ___YOhsugi___. All rights reserved.
 //
 
-
-#import "EditViewController.h"
-#import "AccountViewController.h"
-#import "PropertyViewController.h"
-
 @interface AppDelegate : UIResponder <UIApplicationDelegate>
-{
-    PropertyViewController *propertyView;
-    UINavigationController *propertyNavi;
-}
+
 @property (strong, nonatomic) UIWindow *window;
-@property (strong, nonatomic) UITabBarController *tabBarController;
 
 @end

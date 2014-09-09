@@ -18,5 +18,7 @@
 @end
 
 @protocol AddViewControllerDelegate <NSObject>
+
 - (void)saveAddedData:(AddViewController*)controller;
+
 @end

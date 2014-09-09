@@ -8,12 +8,9 @@
 
 #import "AddViewController.h"
 
-@interface AddViewController ()
-
-@end
-
 @implementation AddViewController
 
+#pragma mark - the life cycle of view
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -51,6 +48,7 @@
     // Dispose of any resources that can be recreated.
 }
 
+#pragma mark - private method
 - (void)saveButtonTapped
 {
     if([self.delegate respondsToSelector:@selector(saveAddedData:)]){
