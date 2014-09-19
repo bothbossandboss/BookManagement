@@ -10,6 +10,4 @@
 
 @property (strong, nonatomic) IBOutlet UIButton *accountSetButton;
 - (void)accountSetButtonTapped;
-- (void)setAccountInfo:(NSString*)firstLaunchMail label:(NSString*)firstLaunchPass;
-
 @end

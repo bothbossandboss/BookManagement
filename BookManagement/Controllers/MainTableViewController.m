@@ -10,9 +10,12 @@
 #import "EditViewController.h"
 #import "DetailTableViewCell.h"
 #import "AddViewController.h"
+#import <AFNetworking/AFNetworking.h>
 
 #define NUM_OF_FIRST_CELL_ROW 10
 #define CELL_HEIGHT 90
+#define FIRST_BEGIN_PAGE 28
+#define NUM_OF_PAGE 10
 
 @interface MainTableViewController () <EditViewControllerDelegate, AddViewControllerDelegate>
 {
@@ -26,6 +29,121 @@
 
 @implementation MainTableViewController
 
+#pragma mark - data base method
+- (void)getJSONDataOfBooks:(NSDictionary*)requestUser label:(NSDictionary*)requestPage
+{
+    NSString *url = @"http://localhost:8888/cakephp/book/get";
+    //初回の読み込みかそれ以外か判断。
+    NSString *isThisFirstGet = [requestPage objectForKey:@"position"];
+    NSDictionary *param =@{@"method":@"book/get",
+                           @"params":@{@"request_token":requestUser,
+                                       @"page":requestPage
+                                   }
+                           };
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+    manager.requestSerializer = [AFJSONRequestSerializer serializer];
+    [manager POST:url
+      parameters:param
+         success:^(AFHTTPRequestOperation *operation,id responseObject){
+             NSDictionary *data = [responseObject objectForKey:@"data"];
+             NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+             [userDefaults setObject:[data objectForKey:@"numOfBooks"] forKey:@"numOfBooks"];
+             int i;
+             int numOfData = [data count] - 1;
+             if([isThisFirstGet isEqualToString:@"latest"]){
+                 for (i=0; i<numOfData; i++) {
+                     NSString *str = [[NSString alloc]initWithFormat:@"array%d",i];
+                     NSDictionary *array = [data objectForKey:str];
+                     NSString *title = [array objectForKey:@"title"];
+                     NSString *price = [array objectForKey:@"price"];
+                     NSDate *purchaseDate = [array objectForKey:@"purchase_date"];
+                     [bookNameArray replaceObjectAtIndex:i withObject:title];
+                     [priceArray replaceObjectAtIndex:i withObject:price];
+                     [dateArray replaceObjectAtIndex:i withObject:purchaseDate];
+                 }
+             }else{
+                 for (i=0; i<numOfData; i++) {
+                     NSString *str = [[NSString alloc]initWithFormat:@"array%d",i];
+                     NSDictionary *array = [data objectForKey:str];
+                     NSString *title = [array objectForKey:@"title"];
+                     NSString *price = [array objectForKey:@"price"];
+                     NSDate *purchaseDate = [array objectForKey:@"purchase_date"];
+                     [bookNameArray addObject:title];
+                     [priceArray addObject:price];
+                     [dateArray addObject:purchaseDate];
+                     [imageArray addObject:[UIImage imageNamed:@"6fe029a2.jpg"]];
+                 }
+                 numOfCellRow += numOfData;
+             }
+             [self.tableView reloadData];
+         }
+         failure:^(AFHTTPRequestOperation *operation,NSError *error){
+             NSLog(@"Error:%@",error);
+         }];
+}
+
+- (void)registerJsonDataOfBook:(NSDictionary*)paramData label:(NSInteger)indexPathRow
+{
+    NSString *url = @"http://localhost:8888/cakephp/book/regist";
+    NSDictionary *param =@{@"method":@"book/regist",
+                           @"params":paramData
+                           };
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+    manager.requestSerializer = [AFJSONRequestSerializer serializer];
+    [manager POST:url
+       parameters:param
+          success:^(AFHTTPRequestOperation *operation,id responseObject){
+              NSString *status = [responseObject objectForKey:@"status"];
+              if([status isEqualToString:@"ok"]){
+                  NSDictionary *data = [responseObject objectForKey:@"data"];
+                  NSString *bookID = [data objectForKey:@"book_id"];
+                  NSLog(@"bookID %@",bookID);
+                  NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+                  NSInteger oldNumOfBooks = [userDefaults integerForKey:@"numOfBooks"];
+                  NSInteger newNumOfBooks = oldNumOfBooks + 1;
+                  [userDefaults setInteger:newNumOfBooks forKey:@"numOfBooks"];
+                  [userDefaults synchronize];
+                  //cellの更新
+                  ++numOfCellRow;
+                  [bookNameArray insertObject:[paramData objectForKey:@"book_name"] atIndex:0];
+                  [priceArray insertObject:[paramData objectForKey:@"price"] atIndex:0];
+                  [dateArray insertObject:[paramData objectForKey:@"purchase_date"] atIndex:0];
+                  [imageArray insertObject:[UIImage imageNamed:@"pnenoimgs011.gif"]
+                                   atIndex:0];
+                  [self.tableView reloadData];
+              }else{
+                  NSString *error = [responseObject objectForKey:@"error"];
+                  [self showAlertView:error];
+              }
+          }
+          failure:^(AFHTTPRequestOperation *operation,NSError *error){
+              NSLog(@"Error:%@",error);
+          }];
+}
+
+- (void)updateJsonDataOfBook:(NSDictionary*)paramData
+{
+    NSString *url = @"http://localhost:8888/cakephp/book/update";
+    NSDictionary *param = @{@"method":@"book/update",
+                            @"params":paramData
+                            };
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+    manager.requestSerializer = [AFJSONRequestSerializer serializer];
+    [manager POST:url
+       parameters:param
+          success:^(AFHTTPRequestOperation *operation,id responseObject){
+              NSString *status = [responseObject objectForKey:@"status"];
+              if([status isEqualToString:@"ok"]){
+                  NSDictionary *data = [responseObject objectForKey:@"data"];
+                  NSString *bookID = [data objectForKey:@"book_id"];
+                  NSLog(@"bookID %@",bookID);
+              }
+          }
+          failure:^(AFHTTPRequestOperation *operation,NSError *error){
+              NSLog(@"Error:%@",error);
+          }];
+}
+
 #pragma mark - the life cycle of view
 - (void)viewDidLoad
 {
@@ -37,17 +155,24 @@
     dateArray = [[NSMutableArray alloc]init];
     imageArray = [[NSMutableArray alloc]init];
     int i;
-    for(i=0;i<NUM_OF_FIRST_CELL_ROW;i++){
-        NSMutableString *str = [[NSMutableString alloc] initWithFormat:@"row%d",i];
-        [bookNameArray insertObject:str atIndex:i];
-        str = [[NSMutableString alloc] initWithFormat:@"%d円",i*100];
-        [priceArray insertObject:str atIndex:i];
-        str = [[NSMutableString alloc] initWithFormat:@"2014/9/%d",i];
-        [dateArray insertObject:str atIndex:i];
-        UIImage *randomImage;
-        randomImage = [UIImage imageNamed:@"6fe029a2.jpg"];
-        [imageArray insertObject:randomImage atIndex:i];
+    for(i=0; i<numOfCellRow; i++){
+        [bookNameArray insertObject:@"title" atIndex:i];
+        [priceArray insertObject:@"price" atIndex:i];
+        [dateArray insertObject:@"purchaseDate" atIndex:i];
+        [imageArray insertObject:[UIImage imageNamed:@"pnenoimgs011.gif"] atIndex:i];
     }
+    //request_tokenは本来暗号化されたものなはずなので、後で修正が必要。(2014/9/18)
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    NSString *userID = [userDefaults objectForKey:@"userID"];
+    //test
+    NSDictionary *requestUser = @{@"user_id":userID,
+                                  @"mail_address":@"01234@567.com",
+                                  @"password":@"01234567"
+                                  };
+    NSDictionary *requestPage = @{@"begin":@FIRST_BEGIN_PAGE,
+                                  @"numOfPage":@NUM_OF_PAGE,
+                                  @"position":@"latest"};
+    [self getJSONDataOfBooks:requestUser label:requestPage];
     UIBarButtonItem *addButton = [[UIBarButtonItem alloc]
                                    initWithTitle:@"追加"
                                    style:UIBarButtonItemStyleDone
@@ -56,14 +181,17 @@
                                    ];
     self.navigationItem.rightBarButtonItem = addButton;
     [self.tableView registerNib:[UINib nibWithNibName:@"DetailTableViewCell" bundle:nil] forCellReuseIdentifier:@"Cell"];
-}
+ }
 
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView
+- (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
 {
-    //一番下までスクロールしたかどうか判定して読み込み
-    if(self.tableView.contentOffset.y >= (self.tableView.contentSize.height - self.tableView.bounds.size.height)){
-        NSLog(@"最後までスクロールした");
-    }
+    UIButton *moreButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    moreButton.frame = CGRectMake(0, 0, 320, 72);
+    [moreButton setTitle:@"***もっと読み込む***" forState:UIControlStateNormal];
+    [moreButton setBackgroundColor:[UIColor grayColor]];
+    [moreButton setTitleColor:[UIColor greenColor] forState:UIControlStateNormal];
+    [moreButton addTarget:self action:@selector(reloadMoreData) forControlEvents:UIControlEventTouchDown];
+    return moreButton;
 }
 
 - (void)didReceiveMemoryWarning
@@ -72,8 +200,18 @@
     // Dispose of any resources that can be recreated.
 }
 
-#pragma mark - Table view data source
+- (void)showAlertView:(NSString*)message
+{
+    UIAlertView *alertView = [[UIAlertView alloc]
+                              initWithTitle:@"エラー"
+                              message:message
+                              delegate:self
+                              cancelButtonTitle:@"OK"
+                              otherButtonTitles:nil];
+    [alertView show];
+}
 
+#pragma mark - Table view data source
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     return 1;
@@ -84,6 +222,14 @@
     return  numOfCellRow;
 }
 
+- (void)updateCell:(DetailTableViewCell*)cell atIndexPath:(NSIndexPath *)indexPath
+{
+    cell.bookNameLabel.text = [bookNameArray objectAtIndex:indexPath.row];
+    cell.priceLabel.text = [priceArray objectAtIndex:indexPath.row];
+    cell.dateLabel.text = [dateArray objectAtIndex:indexPath.row];
+    cell.bookImageView.image = [imageArray objectAtIndex:indexPath.row];
+}
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     //cellのxibファイルを指定したことで、以下のcellがnilになることは無い。
@@ -91,10 +237,7 @@
     cell.bookNameLabel.adjustsFontSizeToFitWidth = YES;
     cell.priceLabel.adjustsFontSizeToFitWidth = YES;
     cell.dateLabel.adjustsFontSizeToFitWidth = YES;
-    cell.bookNameLabel.text = [bookNameArray objectAtIndex:indexPath.row];
-    cell.priceLabel.text = [priceArray objectAtIndex:indexPath.row];
-    cell.dateLabel.text = [dateArray objectAtIndex:indexPath.row];
-    cell.bookImageView.image = [imageArray objectAtIndex:indexPath.row];
+    [self updateCell:cell atIndexPath:indexPath];
     return cell;
 }
 //cellの大きさ（高さ）の設定。
@@ -145,7 +288,24 @@
 - (void)reloadMoreData
 {
     //昔のcellを取得して表示する。
-    NSLog(@"reloadMoreData");
+    NSLog(@"reload");
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    NSString *userID = [userDefaults objectForKey:@"userID"];
+    NSInteger numOfBooks = [userDefaults integerForKey:@"numOfBooks"];
+    NSInteger beginPageInteger = numOfBooks - numOfCellRow;
+    if(beginPageInteger == 0){
+        [self showAlertView:@"これ以上のデータはありません"];
+    }
+    NSNumber *beginPage = [NSNumber numberWithInteger:beginPageInteger];
+    //test
+    NSDictionary *requestUser = @{@"user_id":userID,
+                                  @"mail_address":@"01234@567.com",
+                                  @"password":@"01234567"
+                                  };
+    NSDictionary *requestPage = @{@"begin":beginPage,
+                                  @"numOfPage":@NUM_OF_PAGE,
+                                  @"position":@"old"};
+    [self getJSONDataOfBooks:requestUser label:requestPage];
 }
 
 #pragma mark - public method
@@ -154,10 +314,7 @@
 {
     //indexPathを指定してcellを呼び出す。
     NSIndexPath *cellIndexPath = [NSIndexPath indexPathForRow:controller.indexPathRow inSection:controller.indexPathSection];
-    NSLog(@"indexPathRow%d indexPathSection%d",controller.indexPathRow,controller.indexPathSection);
-    NSLog(@"cellIndexPathRow%d cellIndexPathSection%d",cellIndexPath.row,cellIndexPath.section);
     DetailTableViewCell *cell = (DetailTableViewCell*)[self.tableView cellForRowAtIndexPath:cellIndexPath];
-    
     //値の更新
     cell.bookNameLabel.text = controller.bookName;
     cell.priceLabel.text = controller.price;
@@ -167,22 +324,45 @@
     [priceArray replaceObjectAtIndex:controller.indexPathRow withObject:controller.price];
     [dateArray replaceObjectAtIndex:controller.indexPathRow withObject:controller.date];
     [imageArray replaceObjectAtIndex:controller.indexPathRow withObject:controller.image];
+    //DBデータ更新
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    NSString *userID = [userDefaults objectForKey:@"userID"];
+    //test
+    NSDictionary *requestUser = @{@"user_id":userID,
+                                  @"mail_address":@"01234@567.com",
+                                  @"password":@"01234567"
+                                  };
+    NSDictionary *paramData =@{@"request_token":requestUser,
+                               @"book_id":@5,
+                               @"book_name":cell.bookNameLabel.text,
+                               @"price":cell.priceLabel.text,
+                               @"purchase_date":cell.dateLabel.text,
+                               @"image":@"no image"
+                               };
+    [self updateJsonDataOfBook:paramData];
     //controllerの解放
     [self.navigationController popViewControllerAnimated:YES];
 }
 
-- (void)saveAddedData:(AddViewController *)controller
+- (void)saveAddedData:(AddViewController*)controller
 {
-    //cellの追加は、配列に要素を追加してreloadすればいいみたい。insertは働かなかった。
-    ++numOfCellRow;
-    [bookNameArray insertObject:controller.bookName atIndex:controller.indexPathRow];
-    [priceArray insertObject:controller.price atIndex:controller.indexPathRow];
-    [dateArray insertObject:controller.date atIndex:controller.indexPathRow];
-    if(controller.image == nil){
-        controller.image = [UIImage imageNamed:@"pnenoimgs011.gif"];
-    }
-    [imageArray insertObject:controller.image atIndex:controller.indexPathRow];
-    [self.tableView reloadData];
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    NSString *userID = [userDefaults objectForKey:@"userID"];
+    //test
+    NSDictionary *requestUser = @{@"user_id":userID,
+                                  @"mail_address":@"01234@567.com",
+                                  @"password":@"01234567"
+                                  };
+    //controllerが消失するタイミングが不明なので、データをコピーしとこう。
+    NSDictionary *paramData =@{@"request_token":requestUser,
+                               @"book_name":controller.bookName,
+                               @"price":controller.price,
+                               @"purchase_date":controller.date,
+                               @"image":@"no image"
+                               };
+    NSInteger indexPathRow = controller.indexPathRow;
+    //DBにアクセスして登録すべきか判断。登録すべき場合はcell更新。
+    [self registerJsonDataOfBook:paramData label:indexPathRow];
 }
 
 @end

@@ -14,6 +14,7 @@
 
 #import "PropertyViewController.h"
 #import "AccountViewController.h"
+#import <AFNetworking/AFNetworking.h>
 
 #define MAIL 0
 #define PASSWORD 1
@@ -37,11 +38,15 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
     self.title = @"設定";
     accountInfo = [[NSMutableArray alloc]init];
     //アカウント情報の設定
-    NSString *firstMailAddress = @"01234@56789.com";
-    NSString *firstPassword = @"0123456789";
+    NSString *firstMailAddress = @"01234@567.com";
+    NSString *firstPassword = @"01234567";
     [accountInfo insertObject:firstMailAddress atIndex:MAIL];
     [accountInfo insertObject:firstPassword atIndex:PASSWORD];
     [accountSetButton  addTarget:self action:@selector(accountSetButtonTapped) forControlEvents:UIControlEventTouchDown];
@@ -56,7 +61,6 @@
 #pragma mark - private method
 - (void)accountSetButtonTapped
 {
-    NSLog(@"(accSBT)MAIL:%@ PASS:%@",[accountInfo objectAtIndex:MAIL],[accountInfo objectAtIndex:PASSWORD]);
     AccountViewController *accountViewController = [[AccountViewController alloc]init];
     accountViewController.delegate = self;
     accountViewController.mailAddress = [accountInfo objectAtIndex:MAIL];
@@ -64,23 +68,13 @@
     UINavigationController *accountNavi = [[UINavigationController alloc]
                                            initWithRootViewController:accountViewController];
     [self.navigationController presentViewController:accountNavi animated:YES completion:nil];
-    
 }
 
 #pragma mark - public method
 - (void)saveEditedAccountInfo:(AccountViewController *)controller
 {
-    [accountInfo insertObject:controller.mailAddress atIndex:MAIL];
-    [accountInfo insertObject:controller.password atIndex:PASSWORD];
-    NSLog(@"(saved)MAIL:%@ PASS:%@",[accountInfo objectAtIndex:MAIL],[accountInfo objectAtIndex:PASSWORD]);
-}
-
-//アプリ初回起動時に、ユーザーのアカウント情報をAppDelegate内で取得して、その情報をAccountViewControllerに反映させる。
-- (void)setAccountInfo:(NSString*)firstLaunchMail label:(NSString*)firstLaunchPass
-{
-     accountInfo = [[NSMutableArray alloc]init];
-    [accountInfo insertObject:firstLaunchMail atIndex:MAIL];
-    [accountInfo insertObject:firstLaunchPass atIndex:PASSWORD];
+    [accountInfo replaceObjectAtIndex:MAIL withObject:controller.mailAddress];
+    [accountInfo replaceObjectAtIndex:PASSWORD withObject:controller.password];
 }
 
 @end

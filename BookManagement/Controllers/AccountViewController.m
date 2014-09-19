@@ -19,6 +19,7 @@
  */
 
 #import "AccountViewController.h"
+#import <AFNetworking/AFNetworking.h>
 
 #define KEYBOARD_THRESHOLD 10
 #define ADJUSTING_SCREEN_EDGE 80
@@ -88,6 +89,50 @@
 }
 
 #pragma mark - private method
+- (void)postJsonDataToLogIn
+{
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+    NSString *url = @"http://localhost:8888/cakephp/account/login";
+    NSDictionary *param =@{@"method":@"account/login",
+                           @"params":@{@"mail_address":self.mailAddressTextField.text,
+                                       @"password":self.passwordTextField.text}
+                           };
+    manager.requestSerializer = [AFJSONRequestSerializer serializer];
+    [manager POST:url
+       parameters:param
+          success:^(AFHTTPRequestOperation *operation,id responseObject){
+              NSString *status = [responseObject objectForKey:@"status"];
+              NSDictionary *data = [responseObject objectForKey:@"data"];
+              if([status isEqualToString:@"ng"]){
+                  //アカウントは存在するがパスワードが違う。
+                  NSString *errorMessage = [responseObject objectForKey:@"error"];
+                  NSLog(@"%@",errorMessage);
+                  UIAlertView *alertView = [[UIAlertView alloc]
+                                            initWithTitle:@"エラー"
+                                            message:@"パスワードが違います"
+                                            delegate:self
+                                            cancelButtonTitle:@"OK"
+                                            otherButtonTitles:nil];
+                  [alertView show];
+              }else{
+                  NSLog(@"login status:%@",status);
+                  NSString *userID = [data objectForKey:@"user_id"];
+                  //ユーザーデフォルトにユーザーIDを保存。ユーザーデフォルトは1回目の呼び出しで初期化され、2回目以降は同じインスタンスが呼び出される。
+                  NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+                  [userDefaults setObject:userID forKey:@"userID"];
+                  //mailAddressとpasswordをTextFieldの内容に更新
+                  self.mailAddress = self.mailAddressTextField.text;
+                  self.password = self.passwordTextField.text;
+                  [self.delegate saveEditedAccountInfo:self];
+                  [self dismissViewControllerAnimated:YES completion:nil];
+              }
+          }
+          failure:^(AFHTTPRequestOperation *operation,NSError *error){
+              NSLog(@"Error:%@",error);
+          }];
+
+}
+
 - (void)saveButtonTapped
 {
     //文字列(NSString)の比較はisEqualToString:を用いる。(==)ではだめ。
@@ -101,13 +146,42 @@
                                   otherButtonTitles:nil];
         [alertView show];
     }else{
-        //mailAddressとpasswordをTextFieldの内容に更新
-        if([self.delegate respondsToSelector:@selector(saveEditedAccountInfo:)]){
-            self.mailAddress = self.mailAddressTextField.text;
-            self.password = self.passwordTextField.text;
-            [self.delegate saveEditedAccountInfo:self];
-            [self dismissViewControllerAnimated:YES completion:nil];
-        }
+        /*とりあえず新規登録*/
+        AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+        NSString *url = @"http://localhost:8888/cakephp/account/regist";
+        //送信すべき情報はパラメータに格納。
+        NSDictionary *param =@{@"method":@"account/regist",
+                               @"params":@{@"mail_address": self.mailAddressTextField.text,
+                                           @"password":self.passwordTextField.text}
+                               };
+        //apiの通り、リクエストデータはjson形式なので、パラメータをjsonへ変換。
+        manager.requestSerializer = [AFJSONRequestSerializer serializer];
+        //パラメータを送信してデータを受けとる。
+        [manager POST:url
+           parameters:param
+              success:^(AFHTTPRequestOperation *operation,id responseObject){
+                  NSString *status = [responseObject objectForKey:@"status"];
+                  NSString *errorMessage = [responseObject objectForKey:@"error"];
+                  NSDictionary *data = [responseObject objectForKey:@"data"];
+                  //アカウントが既にある場合。
+                  if([status isEqualToString:@"ng"]){
+                      NSLog(@"%@",errorMessage);
+                      //ログインへ移行。
+                      [self postJsonDataToLogIn];
+                  }else if([self.delegate respondsToSelector:@selector(saveEditedAccountInfo:)]){
+                      NSString *userID = [data objectForKey:@"user_id"];
+                      NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+                      [userDefaults setObject:userID forKey:@"userID"];
+                      //mailAddressとpasswordをTextFieldの内容に更新
+                      self.mailAddress = self.mailAddressTextField.text;
+                      self.password = self.passwordTextField.text;
+                      [self.delegate saveEditedAccountInfo:self];
+                      [self dismissViewControllerAnimated:YES completion:nil];
+                  }
+              }
+              failure:^(AFHTTPRequestOperation *operation,NSError *error){
+                  NSLog(@"Error:%@",error);
+              }];
     }
 }
 

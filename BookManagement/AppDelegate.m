@@ -29,7 +29,7 @@
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen]bounds]];
     MainTableViewController *mainView = [[MainTableViewController alloc]init];
     UINavigationController *mainNavi = [[UINavigationController alloc]
-                                            initWithRootViewController:mainView];
+                    initWithRootViewController:mainView];
     propertyView = [[PropertyViewController alloc]init];
     propertyNavi = [[UINavigationController alloc]
                     initWithRootViewController:propertyView];
@@ -49,6 +49,7 @@
     propertyTabBarItem.title = @"設定";
     [[UITabBarItem appearance] setTitlePositionAdjustment:UIOffsetMake(0, setTabBarItemPosition)];
     self.window.rootViewController = tabBarController;
+    tabBarController.selectedViewController = propertyNavi;
     [self.window makeKeyAndVisible];
     [self performSelector:@selector(firstLogin) withObject:nil afterDelay:0.2];
     return YES;
@@ -56,22 +57,12 @@
 
 - (void)firstLogin
 {
-    /*
-     *初回起動時
-     */
+     //初回起動時
     if (![[NSUserDefaults standardUserDefaults]boolForKey:@"HasLaunchedOnce"]) {
         NSLog(@"first");
-        tabBarController.selectedViewController = propertyNavi;
-        //データベースから登録済みユーザーのアカウント情報を取得しAccount画面に反映させる。
-        //今はある初期値を代入している。
-        NSString *mail = @"abcd@efg.com";
-        NSString *pass = @"hijk";
-        [propertyView setAccountInfo:mail label:pass];
         [propertyView accountSetButtonTapped];
     }
 }
-
-
 
 - (void)applicationWillResignActive:(UIApplication *)application
 {

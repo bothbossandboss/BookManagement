@@ -14,5 +14,6 @@
 @property (weak, nonatomic) IBOutlet UILabel *dateLabel;
 @property (weak, nonatomic) IBOutlet UIImageView *bookImageView;
 @property (weak, nonatomic) NSString *bookImageName;
+@property (weak, nonatomic) NSString *bookID;
 
 @end
