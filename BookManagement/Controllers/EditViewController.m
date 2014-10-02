@@ -46,9 +46,12 @@
     //詳細画面において、保存ボタンを押すと実行されるべき事柄
     //書籍名、金額、日付データを取得し、前のTable画面へデータを渡す。
     if([self.delegate respondsToSelector:@selector(saveEditedData:)]){
-        self.bookName = self.bookNameTextField.text;
-        self.price = self.priceTextField.text;
-        self.date = self.dateTextField.text;
+        NSString *str1 = self.bookNameTextField.text;
+        self.bookName = str1;
+        NSString *str2 = self.priceTextField.text;
+        self.price = str2;
+        NSString *str3 = self.dateTextField.text;
+        self.date = str3;
         self.image = self.imageView.image;
         NSLog(@"indexPath%d bookName%@ price%@ date%@",self.indexPathRow,self.bookName,self.price,self.date);
         [self.delegate saveEditedData:self];

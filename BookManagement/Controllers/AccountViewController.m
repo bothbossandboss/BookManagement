@@ -26,9 +26,6 @@
 #define NAVIGATION_BAR_HEIGHT 88
 
 @interface AccountViewController () <UITextFieldDelegate, UIGestureRecognizerDelegate>
-{
-    UITextField *activeField;
-}
 @end
 
 @implementation AccountViewController
@@ -67,6 +64,21 @@
     self.singleTap = [[UITapGestureRecognizer alloc]
                       initWithTarget:self action:@selector(onSingleTap:)];
     myScrollView.frame = self.view.bounds;
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [[NSNotificationCenter defaultCenter]
+     addObserver:self
+     selector:@selector(keyboardWasShown:)
+     name:UIKeyboardDidShowNotification
+     object:nil];
+    [[NSNotificationCenter defaultCenter]
+     addObserver:self
+     selector:@selector(keyboardWillBeHidden:)
+     name:UIKeyboardWillHideNotification
+     object:nil];
+    
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -117,14 +129,22 @@
               }else{
                   NSLog(@"login status:%@",status);
                   NSString *userID = [data objectForKey:@"user_id"];
+                  NSString *userMail = [data objectForKey:@"mail_address"];
+                  NSString *userPass = [data objectForKey:@"password"];
                   //ユーザーデフォルトにユーザーIDを保存。ユーザーデフォルトは1回目の呼び出しで初期化され、2回目以降は同じインスタンスが呼び出される。
                   NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
                   [userDefaults setObject:userID forKey:@"userID"];
+                  [userDefaults setObject:userMail forKey:@"mail_address"];
+                  [userDefaults setObject:userPass forKey:@"password"];
+                  [userDefaults synchronize];
                   //mailAddressとpasswordをTextFieldの内容に更新
-                  self.mailAddress = self.mailAddressTextField.text;
-                  self.password = self.passwordTextField.text;
+                  NSString *str1 = self.mailAddressTextField.text;
+                  self.mailAddress = str1;
+                  NSString *str2 = self.passwordTextField.text;
+                  self.password = str2;
                   [self.delegate saveEditedAccountInfo:self];
                   [self dismissViewControllerAnimated:YES completion:nil];
+                  NSLog(@"%@",userID);
               }
           }
           failure:^(AFHTTPRequestOperation *operation,NSError *error){
@@ -170,11 +190,18 @@
                       [self postJsonDataToLogIn];
                   }else if([self.delegate respondsToSelector:@selector(saveEditedAccountInfo:)]){
                       NSString *userID = [data objectForKey:@"user_id"];
+                      NSString *userMail = [data objectForKey:@"mail_address"];
+                      NSString *userPass = [data objectForKey:@"password"];
                       NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
                       [userDefaults setObject:userID forKey:@"userID"];
+                      [userDefaults setObject:userMail forKey:@"mail_address"];
+                      [userDefaults setObject:userPass forKey:@"password"];
+                      [userDefaults synchronize];
                       //mailAddressとpasswordをTextFieldの内容に更新
-                      self.mailAddress = self.mailAddressTextField.text;
-                      self.password = self.passwordTextField.text;
+                      NSString *str1 = self.mailAddressTextField.text;
+                      self.mailAddress = str1;
+                      NSString *str2 = self.passwordTextField.text;
+                      self.password = str2;
                       [self.delegate saveEditedAccountInfo:self];
                       [self dismissViewControllerAnimated:YES completion:nil];
                   }
@@ -203,9 +230,9 @@
 {
     if(gestureRecognizer == self.singleTap){
         //キーボード表示中
-        if(self.mailAddressTextField.isFirstResponder == YES
-           || self.passwordTextField.isFirstResponder == YES
-           || self.confirmTextField.isFirstResponder == YES){
+        if(self.mailAddressTextField.isFirstResponder
+           || self.passwordTextField.isFirstResponder
+           || self.confirmTextField.isFirstResponder){
             return YES;
         }else{
             return NO;
@@ -217,23 +244,8 @@
 //TextField制御
 - (BOOL)textFieldShouldBeginEditing:(UITextField *)textField
 {
-    activeField = textField;
+    _activeField = textField;
     return YES;
-}
-
-- (void)viewWillAppear:(BOOL)animated
-{
-    [[NSNotificationCenter defaultCenter]
-     addObserver:self
-     selector:@selector(keyboardWasShown:)
-     name:UIKeyboardDidShowNotification
-     object:nil];
-    [[NSNotificationCenter defaultCenter]
-     addObserver:self
-     selector:@selector(keyboardWillBeHidden:)
-     name:UIKeyboardWillHideNotification
-     object:nil];
-    
 }
 
 - (void)keyboardWasShown:(NSNotification*)aNotification
@@ -243,9 +255,9 @@
     CGRect keyboardFrameEnd = [[userInfo objectForKey:UIKeyboardFrameEndUserInfoKey]CGRectValue];
     CGRect screenBounds = [[UIScreen mainScreen]bounds];
     float screenHeight = screenBounds.size.height;
-    float textFieldEdge = activeField.frame.origin.y + activeField.frame.size.height;
+    float textFieldEdge = _activeField.frame.origin.y + _activeField.frame.size.height;
     float keyboardEdge = screenHeight-keyboardFrameEnd.size.height - KEYBOARD_THRESHOLD;
-    float afterScreenEdge = screenHeight-activeField.frame.origin.y - activeField.frame.size.height-keyboardFrameEnd.size.height - ADJUSTING_SCREEN_EDGE;
+    float afterScreenEdge = screenHeight-_activeField.frame.origin.y - _activeField.frame.size.height-keyboardFrameEnd.size.height - ADJUSTING_SCREEN_EDGE;
     if(textFieldEdge > keyboardEdge){
         [UIView animateWithDuration:0.3
                          animations:^{
@@ -262,7 +274,7 @@
                                                          myScrollView.frame.size.width,
                                                          myScrollView.frame.size.height);
                      }];
-    activeField = nil;
+    _activeField = nil;
 }
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField

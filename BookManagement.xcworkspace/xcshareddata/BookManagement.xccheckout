@@ -10,29 +10,29 @@
 	<string>BookManagement</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
-		<key>A81DD062-C486-4129-9926-A2A716E731E2</key>
+		<key>4260B0765C7D91722BB43BB23CD5B58C7B7DB125</key>
 		<string>https://github.com/bothbossandboss/BookManagement.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
 	<string>BookManagement.xcworkspace</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
-		<key>A81DD062-C486-4129-9926-A2A716E731E2</key>
+		<key>4260B0765C7D91722BB43BB23CD5B58C7B7DB125</key>
 		<string>..</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
 	<string>https://github.com/bothbossandboss/BookManagement.git</string>
 	<key>IDESourceControlProjectVersion</key>
-	<integer>110</integer>
+	<integer>111</integer>
 	<key>IDESourceControlProjectWCCIdentifier</key>
-	<string>A81DD062-C486-4129-9926-A2A716E731E2</string>
+	<string>4260B0765C7D91722BB43BB23CD5B58C7B7DB125</string>
 	<key>IDESourceControlProjectWCConfigurations</key>
 	<array>
 		<dict>
 			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
 			<string>public.vcs.git</string>
 			<key>IDESourceControlWCCIdentifierKey</key>
-			<string>A81DD062-C486-4129-9926-A2A716E731E2</string>
+			<string>4260B0765C7D91722BB43BB23CD5B58C7B7DB125</string>
 			<key>IDESourceControlWCCName</key>
 			<string>BookManagement</string>
 		</dict>

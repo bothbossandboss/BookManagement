@@ -19,6 +19,7 @@
 @property (strong, nonatomic) UITapGestureRecognizer *singleTap;
 @property (strong, nonatomic) NSString *mailAddress;
 @property (strong, nonatomic) NSString *password;
+@property (strong, nonatomic) UITextField *activeField;
 
 @end
 

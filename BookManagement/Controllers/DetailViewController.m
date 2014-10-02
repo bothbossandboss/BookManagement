@@ -173,8 +173,10 @@ UIImagePickerControllerDelegate, UINavigationControllerDelegate>
     float textFieldEdge = activeField.frame.origin.y + activeField.frame.size.height;
     float keyboardEdge = screenHeight-keyboardFrameEnd.size.height - KEYBOARD_THRESHOLD;
     float afterScreenEdge = screenHeight-activeField.frame.origin.y - activeField.frame.size.height-keyboardFrameEnd.size.height - ADJUSTING_SCREEN_EDGE;
+    NSLog(@"keyboardEdge:%f afterScreenEdge:%f", keyboardEdge, afterScreenEdge);
     if(textFieldEdge > keyboardEdge){
-        [UIView animateWithDuration:0.3
+        NSLog(@"keyboard scroll");
+        [UIView animateWithDuration:0.2
                          animations:^{
                              myScrollView.frame = CGRectMake(0, afterScreenEdge, myScrollView.frame.size.width, myScrollView.frame.size.height);
                          }];

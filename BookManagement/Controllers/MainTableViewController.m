@@ -20,6 +20,7 @@
 @interface MainTableViewController () <EditViewControllerDelegate, AddViewControllerDelegate>
 {
     NSInteger numOfCellRow;
+    NSMutableArray *bookIdArray;
     NSMutableArray *bookNameArray;
     NSMutableArray *priceArray;
     NSMutableArray *dateArray;
@@ -49,14 +50,17 @@
              NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
              [userDefaults setObject:[data objectForKey:@"numOfBooks"] forKey:@"numOfBooks"];
              int i;
-             int numOfData = [data count] - 1;
+             int numOfData = (int)[data count] - 1;
              if([isThisFirstGet isEqualToString:@"latest"]){
+                 numOfCellRow = numOfData;
                  for (i=0; i<numOfData; i++) {
                      NSString *str = [[NSString alloc]initWithFormat:@"array%d",i];
                      NSDictionary *array = [data objectForKey:str];
+                     NSString *bookID = [array objectForKey:@"book_id"];
                      NSString *title = [array objectForKey:@"title"];
                      NSString *price = [array objectForKey:@"price"];
                      NSDate *purchaseDate = [array objectForKey:@"purchase_date"];
+                     [bookIdArray replaceObjectAtIndex:i withObject:bookID];
                      [bookNameArray replaceObjectAtIndex:i withObject:title];
                      [priceArray replaceObjectAtIndex:i withObject:price];
                      [dateArray replaceObjectAtIndex:i withObject:purchaseDate];
@@ -65,9 +69,11 @@
                  for (i=0; i<numOfData; i++) {
                      NSString *str = [[NSString alloc]initWithFormat:@"array%d",i];
                      NSDictionary *array = [data objectForKey:str];
+                     NSString *bookID = [array objectForKey:@"book_id"];
                      NSString *title = [array objectForKey:@"title"];
                      NSString *price = [array objectForKey:@"price"];
                      NSDate *purchaseDate = [array objectForKey:@"purchase_date"];
+                     [bookIdArray addObject:bookID];
                      [bookNameArray addObject:title];
                      [priceArray addObject:price];
                      [dateArray addObject:purchaseDate];
@@ -105,6 +111,7 @@
                   [userDefaults synchronize];
                   //cellの更新
                   ++numOfCellRow;
+                  [bookIdArray insertObject:bookID atIndex:0];
                   [bookNameArray insertObject:[paramData objectForKey:@"book_name"] atIndex:0];
                   [priceArray insertObject:[paramData objectForKey:@"price"] atIndex:0];
                   [dateArray insertObject:[paramData objectForKey:@"purchase_date"] atIndex:0];
@@ -150,38 +157,45 @@
     [super viewDidLoad];
     self.title = @"書籍一覧";
     numOfCellRow = NUM_OF_FIRST_CELL_ROW;
+    bookIdArray = [[NSMutableArray alloc]init];
     bookNameArray = [[NSMutableArray alloc]init];
     priceArray = [[NSMutableArray alloc]init];
     dateArray = [[NSMutableArray alloc]init];
     imageArray = [[NSMutableArray alloc]init];
     int i;
     for(i=0; i<numOfCellRow; i++){
+        [bookIdArray insertObject:@"bookID" atIndex:i];
         [bookNameArray insertObject:@"title" atIndex:i];
         [priceArray insertObject:@"price" atIndex:i];
         [dateArray insertObject:@"purchaseDate" atIndex:i];
         [imageArray insertObject:[UIImage imageNamed:@"pnenoimgs011.gif"] atIndex:i];
     }
-    //request_tokenは本来暗号化されたものなはずなので、後で修正が必要。(2014/9/18)
+    UIBarButtonItem *addButton = [[UIBarButtonItem alloc]
+                                  initWithTitle:@"追加"
+                                  style:UIBarButtonItemStyleDone
+                                  target:self
+                                  action:@selector(addButtonTapped)
+                                  ];
+    self.navigationItem.rightBarButtonItem = addButton;
+    [self.tableView registerNib:[UINib nibWithNibName:@"DetailTableViewCell" bundle:nil] forCellReuseIdentifier:@"Cell"];
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    NSLog(@"view will appear");
     NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
     NSString *userID = [userDefaults objectForKey:@"userID"];
-    //test
+    NSString *userMail = [userDefaults objectForKey:@"mail_address"];
+    NSString *userPass = [userDefaults objectForKey:@"password"];
     NSDictionary *requestUser = @{@"user_id":userID,
-                                  @"mail_address":@"01234@567.com",
-                                  @"password":@"01234567"
+                                  @"mail_address":userMail,
+                                  @"password":userPass
                                   };
     NSDictionary *requestPage = @{@"begin":@FIRST_BEGIN_PAGE,
                                   @"numOfPage":@NUM_OF_PAGE,
                                   @"position":@"latest"};
     [self getJSONDataOfBooks:requestUser label:requestPage];
-    UIBarButtonItem *addButton = [[UIBarButtonItem alloc]
-                                   initWithTitle:@"追加"
-                                   style:UIBarButtonItemStyleDone
-                                   target:self
-                                   action:@selector(addButtonTapped)
-                                   ];
-    self.navigationItem.rightBarButtonItem = addButton;
-    [self.tableView registerNib:[UINib nibWithNibName:@"DetailTableViewCell" bundle:nil] forCellReuseIdentifier:@"Cell"];
- }
+}
 
 - (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
 {
@@ -224,6 +238,7 @@
 
 - (void)updateCell:(DetailTableViewCell*)cell atIndexPath:(NSIndexPath *)indexPath
 {
+    cell.bookID = [bookIdArray objectAtIndex:indexPath.row];
     cell.bookNameLabel.text = [bookNameArray objectAtIndex:indexPath.row];
     cell.priceLabel.text = [priceArray objectAtIndex:indexPath.row];
     cell.dateLabel.text = [dateArray objectAtIndex:indexPath.row];
@@ -263,8 +278,8 @@
     DetailTableViewCell *cell = (DetailTableViewCell*)[tableView cellForRowAtIndexPath:indexPath];
     //textField.textをセットするのではなく、NSStringのデータを渡すようにセットする。
     //set変数名で初期値をセットして画面を作成できる。
-    [detailViewController setIndexPathRow:indexPath.row];
-    [detailViewController setIndexPathSection:indexPath.section];
+    [detailViewController setIndexPathRow:(int)indexPath.row];
+    [detailViewController setIndexPathSection:(int)indexPath.section];
     [detailViewController setBookName:cell.bookNameLabel.text];
     [detailViewController setPrice:cell.priceLabel.text];
     [detailViewController setDate:cell.dateLabel.text];
@@ -278,8 +293,8 @@
     AddViewController *myAddViewController = [[AddViewController alloc]
                                               initWithNibName:@"DetailViewController" bundle:nil];
     myAddViewController.delegate = self;
-    myAddViewController.indexPathRow = numOfCellRow;
-    myAddViewController.indexPathSection = [self.tableView numberOfSections];
+    myAddViewController.indexPathRow = (int)numOfCellRow;
+    myAddViewController.indexPathSection = (int)[self.tableView numberOfSections];
     UINavigationController *nav = [[UINavigationController alloc]
                                    initWithRootViewController:myAddViewController];
     [self.navigationController presentViewController:nav animated:YES completion:nil];
@@ -297,10 +312,11 @@
         [self showAlertView:@"これ以上のデータはありません"];
     }
     NSNumber *beginPage = [NSNumber numberWithInteger:beginPageInteger];
-    //test
+    NSString *userMail = [userDefaults objectForKey:@"mail_address"];
+    NSString *userPass = [userDefaults objectForKey:@"password"];
     NSDictionary *requestUser = @{@"user_id":userID,
-                                  @"mail_address":@"01234@567.com",
-                                  @"password":@"01234567"
+                                  @"mail_address":userMail,
+                                  @"password":userPass
                                   };
     NSDictionary *requestPage = @{@"begin":beginPage,
                                   @"numOfPage":@NUM_OF_PAGE,
@@ -316,6 +332,7 @@
     NSIndexPath *cellIndexPath = [NSIndexPath indexPathForRow:controller.indexPathRow inSection:controller.indexPathSection];
     DetailTableViewCell *cell = (DetailTableViewCell*)[self.tableView cellForRowAtIndexPath:cellIndexPath];
     //値の更新
+    NSString *bookID = cell.bookID;
     cell.bookNameLabel.text = controller.bookName;
     cell.priceLabel.text = controller.price;
     cell.dateLabel.text = controller.date;
@@ -327,13 +344,14 @@
     //DBデータ更新
     NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
     NSString *userID = [userDefaults objectForKey:@"userID"];
-    //test
+    NSString *userMail = [userDefaults objectForKey:@"mail_address"];
+    NSString *userPass = [userDefaults objectForKey:@"password"];
     NSDictionary *requestUser = @{@"user_id":userID,
-                                  @"mail_address":@"01234@567.com",
-                                  @"password":@"01234567"
+                                  @"mail_address":userMail,
+                                  @"password":userPass
                                   };
     NSDictionary *paramData =@{@"request_token":requestUser,
-                               @"book_id":@5,
+                               @"book_id":bookID,
                                @"book_name":cell.bookNameLabel.text,
                                @"price":cell.priceLabel.text,
                                @"purchase_date":cell.dateLabel.text,
@@ -346,14 +364,18 @@
 
 - (void)saveAddedData:(AddViewController*)controller
 {
+    NSLog(@"table view back");
     NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
     NSString *userID = [userDefaults objectForKey:@"userID"];
-    //test
+    NSString *userMail = [userDefaults objectForKey:@"mail_address"];
+    NSString *userPass = [userDefaults objectForKey:@"password"];
+    NSLog(@"id:%@ mail:%@ pass:%@", userID, userMail, userPass);
     NSDictionary *requestUser = @{@"user_id":userID,
-                                  @"mail_address":@"01234@567.com",
-                                  @"password":@"01234567"
+                                  @"mail_address":userMail,
+                                  @"password":userPass
                                   };
     //controllerが消失するタイミングが不明なので、データをコピーしとこう。
+    NSLog(@"t:%@ p:%@ d:%@",controller.bookName, controller.price, controller.date);
     NSDictionary *paramData =@{@"request_token":requestUser,
                                @"book_name":controller.bookName,
                                @"price":controller.price,
@@ -361,6 +383,7 @@
                                @"image":@"no image"
                                };
     NSInteger indexPathRow = controller.indexPathRow;
+    NSLog(@"%@",paramData);
     //DBにアクセスして登録すべきか判断。登録すべき場合はcell更新。
     [self registerJsonDataOfBook:paramData label:indexPathRow];
 }

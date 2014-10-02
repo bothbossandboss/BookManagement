@@ -52,9 +52,12 @@
 - (void)saveButtonTapped
 {
     if([self.delegate respondsToSelector:@selector(saveAddedData:)]){
-        self.bookName = self.bookNameTextField.text;
-        self.price = self.priceTextField.text;
-        self.date = self.dateTextField.text;
+        NSString *str1 = self.bookNameTextField.text;
+        self.bookName = str1;
+        NSString *str2 = self.priceTextField.text;
+        self.price = str2;
+        NSString *str3 = self.dateTextField.text;
+        self.date = str3;
         self.image = self.imageView.image;
         [self.delegate saveAddedData:self];
         [self dismissViewControllerAnimated:YES completion:nil];
