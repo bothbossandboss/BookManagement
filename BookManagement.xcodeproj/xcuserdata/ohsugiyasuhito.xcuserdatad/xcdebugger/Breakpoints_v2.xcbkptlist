@@ -10,11 +10,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "BookManagement/Controllers/MainTableViewController.m"
-            timestampString = "433938626.92129"
+            timestampString = "435337960.834701"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "267"
-            endingLineNumber = "267"
+            startingLineNumber = "149"
+            endingLineNumber = "149"
             landmarkName = "-tableView:didSelectRowAtIndexPath:"
             landmarkType = "5">
          </BreakpointContent>
@@ -42,11 +42,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "BookManagement/Controllers/MainTableViewController.m"
-            timestampString = "433938626.92129"
+            timestampString = "435337960.834701"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "279"
-            endingLineNumber = "279"
+            startingLineNumber = "161"
+            endingLineNumber = "161"
             landmarkName = "-tableView:didSelectRowAtIndexPath:"
             landmarkType = "5">
          </BreakpointContent>
@@ -138,11 +138,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "BookManagement/Controllers/AddViewController.m"
-            timestampString = "431936829.189115"
+            timestampString = "435332697.862195"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "52"
-            endingLineNumber = "52"
+            startingLineNumber = "54"
+            endingLineNumber = "54"
             landmarkName = "-saveButtonTapped"
             landmarkType = "5">
          </BreakpointContent>
@@ -170,11 +170,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "BookManagement/Controllers/MainTableViewController.m"
-            timestampString = "433938626.92129"
+            timestampString = "435337960.834701"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "366"
-            endingLineNumber = "366"
+            startingLineNumber = "250"
+            endingLineNumber = "250"
             landmarkName = "-saveAddedData:"
             landmarkType = "5">
          </BreakpointContent>
@@ -202,11 +202,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "BookManagement/Controllers/AccountViewController.m"
-            timestampString = "433940242.224751"
+            timestampString = "435335398.462777"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "197"
-            endingLineNumber = "197"
+            startingLineNumber = "196"
+            endingLineNumber = "196"
             landmarkName = "-saveButtonTapped"
             landmarkType = "5">
          </BreakpointContent>
@@ -298,27 +298,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "BookManagement/Controllers/DetailViewController.m"
-            timestampString = "431862817.920882"
+            timestampString = "434710697.402179"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "82"
-            endingLineNumber = "82"
-            landmarkName = "-imagePickerController:didFinishPickingMediaWithInfo:"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "BookManagement/Controllers/DetailViewController.m"
-            timestampString = "431862817.920882"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "80"
-            endingLineNumber = "80"
+            startingLineNumber = "83"
+            endingLineNumber = "83"
             landmarkName = "-imagePickerController:didFinishPickingMediaWithInfo:"
             landmarkType = "5">
          </BreakpointContent>

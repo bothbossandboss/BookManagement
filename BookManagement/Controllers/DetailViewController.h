@@ -22,5 +22,6 @@
 @property (weak, nonatomic) IBOutlet UITextField *priceTextField;
 @property (weak, nonatomic) IBOutlet UITextField *dateTextField;
 @property (strong, nonatomic) UITapGestureRecognizer *singleTap;
+@property (strong, nonatomic) NSString *imagePath;
 
 @end

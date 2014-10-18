@@ -40,6 +40,8 @@
     self.priceTextField.text = self.price;
     self.dateTextField.text = self.date;
     self.imageView.image = [UIImage imageNamed:@"pnenoimgs011.gif"];
+    //imagePathの初期化。画像を選択しなかった場合、no image画像が設定される。
+    self.imagePath = @"http://localhost:8888/cakephp/app/webroot/img/noImage.gif";
 }
 
 - (void)didReceiveMemoryWarning

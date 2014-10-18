@@ -10,6 +10,9 @@
 //適宜調整のこと。
 
 #import "DetailViewController.h"
+#import <AFNetworking/AFNetworking.h>
+#import <AssetsLibrary/AssetsLibrary.h>
+#import <AFHTTPRequestOperationManager.h>
 
 #define KEYBOARD_THRESHOLD 50
 #define ADJUSTING_SCREEN_EDGE 80
@@ -79,8 +82,11 @@ UIImagePickerControllerDelegate, UINavigationControllerDelegate>
 
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
 {
-    self.imageView.image = [info objectForKey:UIImagePickerControllerOriginalImage];
+    UIImage *selectedImage = [info objectForKey:UIImagePickerControllerOriginalImage];
+    self.imageView.image = selectedImage;
     [self dismissViewControllerAnimated:YES completion:NULL];
+    [self uploadImageFile:selectedImage];
+    //[self imageDownload2];
 }
 
 //シングルタップでの挙動（キーボード表示の時）
@@ -173,9 +179,9 @@ UIImagePickerControllerDelegate, UINavigationControllerDelegate>
     float textFieldEdge = activeField.frame.origin.y + activeField.frame.size.height;
     float keyboardEdge = screenHeight-keyboardFrameEnd.size.height - KEYBOARD_THRESHOLD;
     float afterScreenEdge = screenHeight-activeField.frame.origin.y - activeField.frame.size.height-keyboardFrameEnd.size.height - ADJUSTING_SCREEN_EDGE;
-    NSLog(@"keyboardEdge:%f afterScreenEdge:%f", keyboardEdge, afterScreenEdge);
+    //NSLog(@"keyboardEdge:%f afterScreenEdge:%f", keyboardEdge, afterScreenEdge);
     if(textFieldEdge > keyboardEdge){
-        NSLog(@"keyboard scroll");
+        //NSLog(@"keyboard scroll");
         [UIView animateWithDuration:0.2
                          animations:^{
                              myScrollView.frame = CGRectMake(0, afterScreenEdge, myScrollView.frame.size.width, myScrollView.frame.size.height);
@@ -204,6 +210,56 @@ UIImagePickerControllerDelegate, UINavigationControllerDelegate>
                      }];
     [textField resignFirstResponder];
     return  YES;
+}
+
+//画像アップロード
+- (void)uploadImageFile:(UIImage*)uploadImage
+{
+    NSString *url = @"http://localhost:8888/cakephp/book/upload_image";
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+    manager.requestSerializer = [AFJSONRequestSerializer new];
+        
+    NSData *testData = UIImagePNGRepresentation(uploadImage);
+    NSDate *now = [NSDate date];
+    NSString *fileName = [NSString stringWithFormat:@"%d.jpg",(int)[now timeIntervalSince1970]];
+    
+        //アップロード先のURLを設定したNSURLRequestインスタンスを生成する。
+        NSMutableURLRequest *request =
+        [manager.requestSerializer multipartFormRequestWithMethod:@"POST"
+                                                        URLString:url
+                                                       parameters:@{@"method":@"book/upload_image",
+                                                                    @"destination":@"/Applications/MAMP/htdocs/cakephp/app/webroot/img/"}
+                                        constructingBodyWithBlock:^(id<AFMultipartFormData> formData){
+                                            [formData appendPartWithFileData:testData
+                                                                        name:@"Image"
+                                                                    fileName:fileName
+                                                                    mimeType:@"image/jpeg"];
+                                        }error:NULL];        
+        //アップロード処理のためのAFHTTPRequestOperationインスタンスを生成する。
+        AFHTTPRequestOperation *operation =
+        [manager HTTPRequestOperationWithRequest:request
+                                         success:^(AFHTTPRequestOperation *operation,id responseObject){
+                                             if([[responseObject objectForKey:@"status"] isEqualToString:@"ok"]){
+                                                 NSString *str1 = @"http://localhost:8888/cakephp/app/webroot/img/";
+                                                 _imagePath = [str1 stringByAppendingString:fileName];
+                                                 NSLog(@"detail image path : %@",_imagePath);
+                                             }else{
+                                                 NSLog(@"%@", [responseObject objectForKey:@"error"]);
+                                             }
+                                         }
+                                         failure:^(AFHTTPRequestOperation *operation,NSError *error){
+                                             NSLog(@"Error:%@",error);
+                                         }];
+        //データを送信するたびに実行される処理を設定する。
+        [operation setUploadProgressBlock:^(NSUInteger bytesWritten,
+                                            long long totalBytesWritten, long long totalByteExpectedToWrite){
+            //アップロード中の進捗状況をコンソールに表示する。
+            NSLog(@"bytesWritten:%@, totalBytesWritten:%@,totalBytesExpectedToWrite:%@,process:%@",
+                  @(bytesWritten), @(totalBytesWritten), @(totalByteExpectedToWrite),
+                  @((float)totalBytesWritten / totalByteExpectedToWrite));
+        }];
+        //アップロード開始
+        [manager.operationQueue addOperation:operation];
 }
 
 @end

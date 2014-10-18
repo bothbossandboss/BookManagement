@@ -119,13 +119,8 @@
                   //アカウントは存在するがパスワードが違う。
                   NSString *errorMessage = [responseObject objectForKey:@"error"];
                   NSLog(@"%@",errorMessage);
-                  UIAlertView *alertView = [[UIAlertView alloc]
-                                            initWithTitle:@"エラー"
-                                            message:@"パスワードが違います"
-                                            delegate:self
-                                            cancelButtonTitle:@"OK"
-                                            otherButtonTitles:nil];
-                  [alertView show];
+                  NSString *msg = @"パスワードが違います";
+                  [self showAlert:msg];
               }else{
                   NSLog(@"login status:%@",status);
                   NSString *userID = [data objectForKey:@"user_id"];
@@ -155,24 +150,28 @@
 
 - (void)saveButtonTapped
 {
+    //メールアドレス、パスワードが入力されてない場合、警告画面の表示のみ。
+    NSString *mail = self.mailAddressTextField.text;
+    NSString *pass = self.passwordTextField.text;
+    if([self isEmptyString:mail] || [self isEmptyString:pass]){
+        NSString *msg = @"メールアドレスとパスワードを入力してください";
+        [self showAlert:msg];
+        return;
+    }
+    
     //文字列(NSString)の比較はisEqualToString:を用いる。(==)ではだめ。
     //isEqualToString:はバイト数が違うとアウトのようです。似通ったものでもokならcompareだとか(？)
     if (![passwordTextField.text isEqualToString:confirmTextField.text]) {
-        UIAlertView *alertView = [[UIAlertView alloc]
-                                  initWithTitle:@"エラー"
-                                  message:@"パスワードが違います"
-                                  delegate:self
-                                  cancelButtonTitle:@"OK"
-                                  otherButtonTitles:nil];
-        [alertView show];
+        NSString *msg = @"パスワードが違います";
+        [self showAlert:msg];
     }else{
         /*とりあえず新規登録*/
         AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
         NSString *url = @"http://localhost:8888/cakephp/account/regist";
         //送信すべき情報はパラメータに格納。
         NSDictionary *param =@{@"method":@"account/regist",
-                               @"params":@{@"mail_address": self.mailAddressTextField.text,
-                                           @"password":self.passwordTextField.text}
+                               @"params":@{@"mail_address":mail,
+                                           @"password":pass}
                                };
         //apiの通り、リクエストデータはjson形式なので、パラメータをjsonへ変換。
         manager.requestSerializer = [AFJSONRequestSerializer serializer];
@@ -214,7 +213,15 @@
 
 - (void)cancelButtonTapped
 {
-    [self dismissViewControllerAnimated:YES completion:nil];
+    //メールアドレス、パスワードが入力されてない場合、警告画面の表示のみ。
+    NSString *mail = self.mailAddressTextField.text;
+    NSString *pass = self.passwordTextField.text;
+    if([self isEmptyString:mail] || [self isEmptyString:pass]){
+        NSString *msg = @"メールアドレスとパスワードを入力してください";
+        [self showAlert:msg];
+    }else{
+        [self dismissViewControllerAnimated:YES completion:nil];
+    }
 }
 
 //シングルタップでの挙動（キーボード表示の時）
@@ -287,6 +294,26 @@
                      }];
     [textField resignFirstResponder];
     return  YES;
+}
+
+- (void)showAlert:(NSString*)message
+{
+    UIAlertView *alertView = [[UIAlertView alloc]
+                              initWithTitle:@"エラー"
+                              message:message
+                              delegate:self
+                              cancelButtonTitle:@"OK"
+                              otherButtonTitles:nil];
+    [alertView show];
+}
+
+- (BOOL)isEmptyString:(NSString*)str
+{
+    if(str == nil || [str length] == 0){
+        return true;
+    }else{
+        return false;
+    }
 }
 
 @end

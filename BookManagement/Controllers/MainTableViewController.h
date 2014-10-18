@@ -8,4 +8,5 @@
 
 
 @interface MainTableViewController : UITableViewController
+@property (strong, nonatomic) UIImage *downloadImage;
 @end

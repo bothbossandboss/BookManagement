@@ -63,8 +63,8 @@
 {
     AccountViewController *accountViewController = [[AccountViewController alloc]init];
     accountViewController.delegate = self;
-    accountViewController.mailAddress = [accountInfo objectAtIndex:MAIL];
-    accountViewController.password = [accountInfo objectAtIndex:PASSWORD];
+    //accountViewController.mailAddress = [accountInfo objectAtIndex:MAIL];
+    //accountViewController.password = [accountInfo objectAtIndex:PASSWORD];
     UINavigationController *accountNavi = [[UINavigationController alloc]
                                            initWithRootViewController:accountViewController];
     [self.navigationController presentViewController:accountNavi animated:YES completion:nil];

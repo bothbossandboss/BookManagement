@@ -25,131 +25,12 @@
     NSMutableArray *priceArray;
     NSMutableArray *dateArray;
     NSMutableArray *imageArray;
+    int loopCount;
+    int downloadCount;
 }
 @end
 
 @implementation MainTableViewController
-
-#pragma mark - data base method
-- (void)getJSONDataOfBooks:(NSDictionary*)requestUser label:(NSDictionary*)requestPage
-{
-    NSString *url = @"http://localhost:8888/cakephp/book/get";
-    //初回の読み込みかそれ以外か判断。
-    NSString *isThisFirstGet = [requestPage objectForKey:@"position"];
-    NSDictionary *param =@{@"method":@"book/get",
-                           @"params":@{@"request_token":requestUser,
-                                       @"page":requestPage
-                                   }
-                           };
-    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-    manager.requestSerializer = [AFJSONRequestSerializer serializer];
-    [manager POST:url
-      parameters:param
-         success:^(AFHTTPRequestOperation *operation,id responseObject){
-             NSDictionary *data = [responseObject objectForKey:@"data"];
-             NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
-             [userDefaults setObject:[data objectForKey:@"numOfBooks"] forKey:@"numOfBooks"];
-             int i;
-             int numOfData = (int)[data count] - 1;
-             if([isThisFirstGet isEqualToString:@"latest"]){
-                 numOfCellRow = numOfData;
-                 for (i=0; i<numOfData; i++) {
-                     NSString *str = [[NSString alloc]initWithFormat:@"array%d",i];
-                     NSDictionary *array = [data objectForKey:str];
-                     NSString *bookID = [array objectForKey:@"book_id"];
-                     NSString *title = [array objectForKey:@"title"];
-                     NSString *price = [array objectForKey:@"price"];
-                     NSDate *purchaseDate = [array objectForKey:@"purchase_date"];
-                     [bookIdArray replaceObjectAtIndex:i withObject:bookID];
-                     [bookNameArray replaceObjectAtIndex:i withObject:title];
-                     [priceArray replaceObjectAtIndex:i withObject:price];
-                     [dateArray replaceObjectAtIndex:i withObject:purchaseDate];
-                 }
-             }else{
-                 for (i=0; i<numOfData; i++) {
-                     NSString *str = [[NSString alloc]initWithFormat:@"array%d",i];
-                     NSDictionary *array = [data objectForKey:str];
-                     NSString *bookID = [array objectForKey:@"book_id"];
-                     NSString *title = [array objectForKey:@"title"];
-                     NSString *price = [array objectForKey:@"price"];
-                     NSDate *purchaseDate = [array objectForKey:@"purchase_date"];
-                     [bookIdArray addObject:bookID];
-                     [bookNameArray addObject:title];
-                     [priceArray addObject:price];
-                     [dateArray addObject:purchaseDate];
-                     [imageArray addObject:[UIImage imageNamed:@"6fe029a2.jpg"]];
-                 }
-                 numOfCellRow += numOfData;
-             }
-             [self.tableView reloadData];
-         }
-         failure:^(AFHTTPRequestOperation *operation,NSError *error){
-             NSLog(@"Error:%@",error);
-         }];
-}
-
-- (void)registerJsonDataOfBook:(NSDictionary*)paramData label:(NSInteger)indexPathRow
-{
-    NSString *url = @"http://localhost:8888/cakephp/book/regist";
-    NSDictionary *param =@{@"method":@"book/regist",
-                           @"params":paramData
-                           };
-    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-    manager.requestSerializer = [AFJSONRequestSerializer serializer];
-    [manager POST:url
-       parameters:param
-          success:^(AFHTTPRequestOperation *operation,id responseObject){
-              NSString *status = [responseObject objectForKey:@"status"];
-              if([status isEqualToString:@"ok"]){
-                  NSDictionary *data = [responseObject objectForKey:@"data"];
-                  NSString *bookID = [data objectForKey:@"book_id"];
-                  NSLog(@"bookID %@",bookID);
-                  NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
-                  NSInteger oldNumOfBooks = [userDefaults integerForKey:@"numOfBooks"];
-                  NSInteger newNumOfBooks = oldNumOfBooks + 1;
-                  [userDefaults setInteger:newNumOfBooks forKey:@"numOfBooks"];
-                  [userDefaults synchronize];
-                  //cellの更新
-                  ++numOfCellRow;
-                  [bookIdArray insertObject:bookID atIndex:0];
-                  [bookNameArray insertObject:[paramData objectForKey:@"book_name"] atIndex:0];
-                  [priceArray insertObject:[paramData objectForKey:@"price"] atIndex:0];
-                  [dateArray insertObject:[paramData objectForKey:@"purchase_date"] atIndex:0];
-                  [imageArray insertObject:[UIImage imageNamed:@"pnenoimgs011.gif"]
-                                   atIndex:0];
-                  [self.tableView reloadData];
-              }else{
-                  NSString *error = [responseObject objectForKey:@"error"];
-                  [self showAlertView:error];
-              }
-          }
-          failure:^(AFHTTPRequestOperation *operation,NSError *error){
-              NSLog(@"Error:%@",error);
-          }];
-}
-
-- (void)updateJsonDataOfBook:(NSDictionary*)paramData
-{
-    NSString *url = @"http://localhost:8888/cakephp/book/update";
-    NSDictionary *param = @{@"method":@"book/update",
-                            @"params":paramData
-                            };
-    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-    manager.requestSerializer = [AFJSONRequestSerializer serializer];
-    [manager POST:url
-       parameters:param
-          success:^(AFHTTPRequestOperation *operation,id responseObject){
-              NSString *status = [responseObject objectForKey:@"status"];
-              if([status isEqualToString:@"ok"]){
-                  NSDictionary *data = [responseObject objectForKey:@"data"];
-                  NSString *bookID = [data objectForKey:@"book_id"];
-                  NSLog(@"bookID %@",bookID);
-              }
-          }
-          failure:^(AFHTTPRequestOperation *operation,NSError *error){
-              NSLog(@"Error:%@",error);
-          }];
-}
 
 #pragma mark - the life cycle of view
 - (void)viewDidLoad
@@ -178,6 +59,7 @@
                                   ];
     self.navigationItem.rightBarButtonItem = addButton;
     [self.tableView registerNib:[UINib nibWithNibName:@"DetailTableViewCell" bundle:nil] forCellReuseIdentifier:@"Cell"];
+    loopCount = downloadCount = 0;
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -310,6 +192,7 @@
     NSInteger beginPageInteger = numOfBooks - numOfCellRow;
     if(beginPageInteger == 0){
         [self showAlertView:@"これ以上のデータはありません"];
+        return;
     }
     NSNumber *beginPage = [NSNumber numberWithInteger:beginPageInteger];
     NSString *userMail = [userDefaults objectForKey:@"mail_address"];
@@ -337,6 +220,7 @@
     cell.priceLabel.text = controller.price;
     cell.dateLabel.text = controller.date;
     cell.bookImageView.image = controller.image;
+    NSString *imageURL = controller.imagePath;
     [bookNameArray replaceObjectAtIndex:controller.indexPathRow withObject:controller.bookName];
     [priceArray replaceObjectAtIndex:controller.indexPathRow withObject:controller.price];
     [dateArray replaceObjectAtIndex:controller.indexPathRow withObject:controller.date];
@@ -355,7 +239,7 @@
                                @"book_name":cell.bookNameLabel.text,
                                @"price":cell.priceLabel.text,
                                @"purchase_date":cell.dateLabel.text,
-                               @"image":@"no image"
+                               @"image_url":imageURL
                                };
     [self updateJsonDataOfBook:paramData];
     //controllerの解放
@@ -369,23 +253,187 @@
     NSString *userID = [userDefaults objectForKey:@"userID"];
     NSString *userMail = [userDefaults objectForKey:@"mail_address"];
     NSString *userPass = [userDefaults objectForKey:@"password"];
-    NSLog(@"id:%@ mail:%@ pass:%@", userID, userMail, userPass);
     NSDictionary *requestUser = @{@"user_id":userID,
                                   @"mail_address":userMail,
                                   @"password":userPass
                                   };
     //controllerが消失するタイミングが不明なので、データをコピーしとこう。
-    NSLog(@"t:%@ p:%@ d:%@",controller.bookName, controller.price, controller.date);
+    _downloadImage = controller.image;
     NSDictionary *paramData =@{@"request_token":requestUser,
                                @"book_name":controller.bookName,
                                @"price":controller.price,
                                @"purchase_date":controller.date,
-                               @"image":@"no image"
+                               @"image_url":controller.imagePath
                                };
     NSInteger indexPathRow = controller.indexPathRow;
-    NSLog(@"%@",paramData);
     //DBにアクセスして登録すべきか判断。登録すべき場合はcell更新。
     [self registerJsonDataOfBook:paramData label:indexPathRow];
+}
+
+#pragma mark - data base method
+- (void)getJSONDataOfBooks:(NSDictionary*)requestUser label:(NSDictionary*)requestPage
+{
+    NSString *url = @"http://localhost:8888/cakephp/book/get";
+    //初回の読み込みかそれ以外か判断。
+    NSString *isThisFirstGet = [requestPage objectForKey:@"position"];
+    NSDictionary *param =@{@"method":@"book/get",
+                           @"params":@{@"request_token":requestUser,
+                                       @"page":requestPage
+                                       }
+                           };
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+    manager.requestSerializer = [AFJSONRequestSerializer serializer];
+    [manager POST:url
+       parameters:param
+          success:^(AFHTTPRequestOperation *operation,id responseObject){
+              NSDictionary *data = [responseObject objectForKey:@"data"];
+              NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+              [userDefaults setObject:[data objectForKey:@"numOfBooks"] forKey:@"numOfBooks"];
+              int i;
+              int numOfData = (int)[data count] - 1;
+              loopCount = numOfData;
+              if([isThisFirstGet isEqualToString:@"latest"]){
+                  BOOL flag = true;
+                  numOfCellRow = numOfData;
+                  for (i=0; i<numOfData; i++) {
+                      NSString *str = [[NSString alloc]initWithFormat:@"array%d",i];
+                      NSDictionary *array = [data objectForKey:str];
+                      NSString *bookID = [array objectForKey:@"book_id"];
+                      NSString *title = [array objectForKey:@"title"];
+                      NSString *price = [array objectForKey:@"price"];
+                      NSDate *purchaseDate = [array objectForKey:@"purchase_date"];
+                      [bookIdArray replaceObjectAtIndex:i withObject:bookID];
+                      [bookNameArray replaceObjectAtIndex:i withObject:title];
+                      [priceArray replaceObjectAtIndex:i withObject:price];
+                      [dateArray replaceObjectAtIndex:i withObject:purchaseDate];
+                      
+                      //画像処理
+                      NSString *imageURL = [array objectForKey:@"image_url"];
+                      //NSLog(@"imageURL : %@",imageURL);
+                      [self downloadImageFile:imageURL flag:flag insertPlace:i];
+                  }
+              }else{
+                  BOOL flag = false;
+                  for (i=0; i<numOfData; i++) {
+                      NSString *str = [[NSString alloc]initWithFormat:@"array%d",i];
+                      NSDictionary *array = [data objectForKey:str];
+                      NSString *bookID = [array objectForKey:@"book_id"];
+                      NSString *title = [array objectForKey:@"title"];
+                      NSString *price = [array objectForKey:@"price"];
+                      NSDate *purchaseDate = [array objectForKey:@"purchase_date"];
+                      [bookIdArray addObject:bookID];
+                      [bookNameArray addObject:title];
+                      [priceArray addObject:price];
+                      [dateArray addObject:purchaseDate];
+                      
+                      //画像処理
+                      NSString *imageURL = [array objectForKey:@"image_url"];
+                      [self downloadImageFile:imageURL flag:flag insertPlace:-1];
+                  }
+                  numOfCellRow += numOfData;
+              }
+          }
+          failure:^(AFHTTPRequestOperation *operation,NSError *error){
+              NSLog(@"Error:%@",error);
+          }];
+}
+
+- (void)registerJsonDataOfBook:(NSDictionary*)paramData label:(NSInteger)indexPathRow
+{
+    NSString *url = @"http://localhost:8888/cakephp/book/regist";
+    NSDictionary *param =@{@"method":@"book/regist",
+                           @"params":paramData
+                           };
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+    manager.requestSerializer = [AFJSONRequestSerializer serializer];
+    [manager POST:url
+       parameters:param
+          success:^(AFHTTPRequestOperation *operation,id responseObject){
+              NSString *status = [responseObject objectForKey:@"status"];
+              if([status isEqualToString:@"ok"]){
+                  NSDictionary *data = [responseObject objectForKey:@"data"];
+                  NSString *bookID = [data objectForKey:@"book_id"];
+                  NSLog(@"bookID %@",bookID);
+                  NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+                  NSInteger oldNumOfBooks = [userDefaults integerForKey:@"numOfBooks"];
+                  NSInteger newNumOfBooks = oldNumOfBooks + 1;
+                  [userDefaults setInteger:newNumOfBooks forKey:@"numOfBooks"];
+                  [userDefaults synchronize];
+                  //cellの更新
+                  ++numOfCellRow;
+                  [bookIdArray insertObject:bookID atIndex:0];
+                  [bookNameArray insertObject:[paramData objectForKey:@"book_name"] atIndex:0];
+                  [priceArray insertObject:[paramData objectForKey:@"price"] atIndex:0];
+                  [dateArray insertObject:[paramData objectForKey:@"purchase_date"] atIndex:0];
+                  [imageArray insertObject:_downloadImage atIndex:0];
+                  [self.tableView reloadData];
+              }else{
+                  NSString *error = [responseObject objectForKey:@"error"];
+                  [self showAlertView:error];
+              }
+          }
+          failure:^(AFHTTPRequestOperation *operation,NSError *error){
+              NSLog(@"Error:%@",error);
+          }];
+}
+
+- (void)updateJsonDataOfBook:(NSDictionary*)paramData
+{
+    NSString *url = @"http://localhost:8888/cakephp/book/update";
+    NSDictionary *param = @{@"method":@"book/update",
+                            @"params":paramData
+                            };
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+    manager.requestSerializer = [AFJSONRequestSerializer serializer];
+    [manager POST:url
+       parameters:param
+          success:^(AFHTTPRequestOperation *operation,id responseObject){
+              NSString *status = [responseObject objectForKey:@"status"];
+              if([status isEqualToString:@"ok"]){
+                  NSDictionary *data = [responseObject objectForKey:@"data"];
+                  NSString *bookID = [data objectForKey:@"book_id"];
+                  NSLog(@"bookID %@",bookID);
+              }
+          }
+          failure:^(AFHTTPRequestOperation *operation,NSError *error){
+              NSLog(@"Error:%@",error);
+          }];
+}
+
+-(void)downloadImageFile:(NSString*)imagePath flag:(BOOL)firstGet insertPlace:(int)i
+{
+    NSURL *url = [NSURL URLWithString:imagePath];
+    NSURLRequest *request = [NSURLRequest requestWithURL:url];
+    AFHTTPRequestOperation *op = [[AFHTTPRequestOperation  alloc] initWithRequest:request];
+    op.responseSerializer = [AFImageResponseSerializer serializer];
+    // 後は呼ぶだけ
+    [op setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation,UIImage *responseImage) {
+        ++downloadCount;
+        if(firstGet){
+            [imageArray replaceObjectAtIndex:i withObject:responseImage];
+        }else{
+            [imageArray addObject:responseImage];
+        }
+        if(downloadCount == loopCount){
+            [self.tableView reloadData];
+            downloadCount = 0;
+        }
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        //NSLog(@"%@",error);
+        NSLog(@"no imgae : at %d",i);
+        ++downloadCount;
+        UIImage *noImage = [UIImage imageNamed:@"pnenoimgs011.gif"];
+        if(firstGet){
+            [imageArray replaceObjectAtIndex:i withObject:noImage];
+        }else{
+            [imageArray addObject:noImage];
+        }
+        if(downloadCount == loopCount){
+            [self.tableView reloadData];
+            downloadCount = 0;
+        }
+    }];
+    [[NSOperationQueue mainQueue] addOperation:op];
 }
 
 @end
